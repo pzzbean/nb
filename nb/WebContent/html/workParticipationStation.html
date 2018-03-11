@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>ParameterManagementStation</title>
+    <meta id="i18n_pagename" content="index-common">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/style.css">
+  </head>
+  <style>
+  .upfilebox{
+  	width:120px;
+  	height:34px;
+  	background:#4db3ff;
+	color:white;
+	line-height:34px;
+	position:relative;
+	margin-left:30px;
+	border-radius:5px;
+	text-align:center;
+  }
+  .uploadbtn{
+  position:absolute;
+  top:0;
+  left:0;
+	width:120px;
+	height:34px;
+	opacity:0;
+	}
+  .buttonDiv{
+  	overflow:hidden;
+  	}	
+  </style>
+  <body>
+    <div id="app">
+      <!-- 顶部条 -->
+      <el-row>
+        <el-col :span="24">
+          <div class="logo" href="#">
+            <a href="javascript:;" class="sysname">nb</a>
+            <!-- 用户名 -->
+            <div class="welcDiv">
+            <select id="language">
+                <option value="zh-CN">中文简体</option>           
+                <option value="en">English</option>
+            </select>
+              <span class="i18n">welcomeAdmin</span>
+              <el-button class="i18n">login</el-button>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
+      
+        <!-- 左侧导航 -->
+        <el-col :span="4">
+          <el-menu default-active="4-1" class="el-menu-vertical-demo navL" @open="handleOpen" @close="handleClose">
+            <a class="ai18n" href="/nb/html/singleTestReport.html"><el-menu-item index="1"><i class="el-icon-menu"></i><span class="i18n">SingleReport</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/roadTest.html"><el-menu-item index="2"><i class="el-icon-menu"></i><span class="i18n">RoadTest</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/performanceLogs.html"><el-menu-item index="3"><i class="el-icon-setting"></i><span class="i18n">PerformanceLog</span></el-menu-item></a>
+          	<el-submenu index="4">
+          		<template slot="title"><i class="el-icon-menu"></i><span class="i18n">ParameterManagement</template>
+          		<el-menu-item-group>
+		           <a  class="ai18n" href="/nb/html/workParticipationStation.html" ><el-menu-item index="4-1"><span class="i18n">StationModular</el-menu-item></a>
+		          <a  class="ai18n" href="/nb/html/workParticipationStationPro.html" ><el-menu-item index="4-2"><span class="i18n">StationAttributeModule</el-menu-item></a>    
+		          <a  class="ai18n" href="/nb/html/workParticipationCell.html" ><el-menu-item index="4-3"><span class="i18n">CellModule</el-menu-item></a>
+		          <a  class="ai18n" href="/nb/html/workParticipationCategory.html" ><el-menu-item index="4-4"><span class="i18n">CategoryModule</el-menu-item></a>
+		          <a  class="ai18n" href="/nb/html/workParticipationParam.html" ><el-menu-item index="4-5"><span class="i18n">IndexModule</el-menu-item></a>
+		          <a  class="ai18n" href="/nb/html/workParticipationConfig.html" ><el-menu-item index="4-6"><span class="i18n">ConfigureModule</el-menu-item></a>
+		        </el-menu-item-group>  
+          	</el-submenu>
+          		<a class="ai18n" href="/nb/html/signallingDisplay.html"><el-menu-item index="5"><i class="el-icon-setting"></i><span class="i18n">SignallingDisplay</el-menu-item></a>
+            <a class="ai18n" href="/nb/html/testPlan.html"><el-menu-item index="6"><i class="el-icon-setting"></i><span class="i18n">TestPlan</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/userManage.html"><el-menu-item index="7"><i class="el-icon-menu"></i><span class="i18n">UserManagement</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/testItemConfiguration.html"><el-menu-item index="8"><i class="el-icon-setting"></i><span class="i18n">ConfigurationItem</el-menu-item></a>
+          </el-menu>
+        </el-col>
+        
+        <!-- 表格 -->
+        <el-col :span="20">
+        	<el-tabs v-model="lableName" type="border-card" @tab-click="handleClick">
+			    <el-tab-pane label="other" name="1">
+			    	<div class="tableDiv">
+			            <!-- 增删改查按钮部分 -->
+			             <div class="spanbox">
+			              <span class="searchInput">StationNo</span>
+			              <span class="searchInput">StationName</span>
+			            </div>
+			            <div class="buttonDiv">
+			              <el-button style="float:left;margin-right:5px;" v-show="closeArrWorkParam[0]" @click="closeBtnWorkParam(0)" class="closebtn closebtn0" icon="close"></el-button>
+			              <el-button style="float:left;margin-right:5px;" v-show="closeArrWorkParam[1]" @click="closeBtnWorkParam(1)" class="closebtn closebtn1" icon="close"></el-button>
+			              <el-input style="float:left;margin-right:5px;" v-model="wp_station_noWorkParam"  @change="inputChangeWorkParam(0)" placeholder="StationNoNull" class="searchInput"></el-input>
+			              <el-input style="float:left;margin-right:5px;" v-model="wp_station_nameWorkParam" @change="inputChangeWorkParam(1)" placeholder="StationNameNull" class="searchInput"></el-input>
+			              <el-button style="float:left;margin-right:5px;" type="primary" icon="search" @click="searchWorkParam">search</el-button>
+			              <div class="upfilebox" style="float:left">
+			                <span id="upspan">SelectFile</span>
+			              	<input class="uploadbtn" type="file" id="upfile" name="file">
+			              </div>
+			              <el-button style="float:left" type="primary" @click="ajaxFileUpload" class="exportBtn">Import</el-button>
+			            </div>
+			            
+			            <!-- 表格内容 -->
+			            <template>
+			              <el-table :data="tableDataWorkParam" border style="width: 100%" >
+			                <el-table-column prop="wp_station_nodeBid" label="ID" width="150"></el-table-column>
+			                <el-table-column prop="wp_station_name" label="StationName" width="376"></el-table-column>
+			                <el-table-column prop="wp_station_height" label="Altitude" width="150"></el-table-column>
+			                <el-table-column prop="wp_station_longitude" label="StationLongitude" width="150"></el-table-column>
+			                <el-table-column prop="wp_station_latitude" label="StationLatitude" width="150"></el-table-column>
+			                <el-table-column prop="wp_station_tac" label="TAC" width="100"></el-table-column>
+			                <el-table-column prop="wp_station_workModel" label="WorkMode" width="150"></el-table-column>
+			                 <el-table-column label="operation" width="350">
+			                  <template scope="scope">
+			                    <el-button @click="detail(scope.row)" type="primary" size="small">details</el-button>
+			                    <el-button @click="changeStation(scope.row)" type="primary" size="small">update</el-button>
+			                    <el-button @click="delStation(scope.row)" type="danger" size="small">delete</el-button>
+			                    <el-button @click="exportFn(scope)" type="primary" size="small">export</el-button>
+			                  </template>
+			                </el-table-column>
+			              </el-table>
+			              
+			              <!-- 分页 -->
+			              <div class="block pageDiv">
+			                <el-pagination
+			                  @size-change="handleSizeChangeWorkParam"
+			                  @current-change="handleCurrentChangeWorkParam"
+			                  :current-page="currentPageWorkParam"
+			                  :page-size="pageSizeWorkParam"
+			                  layout="prev, pager, next, jumper"
+			                  :total="totalRowsWorkParam">
+			                </el-pagination>
+			              </div>
+			            </template>
+			          </div>
+			    </el-tab-pane>
+			    
+			    <el-tab-pane label="native" name="2">
+			    	
+			    </el-tab-pane>
+		  	</el-tabs>
+        </el-col>
+      </el-row>
+      
+      <!-- 查看详情弹出框 -->
+      <el-dialog title="details" :visible.sync="dialogFormVisible">
+        <el-form :model="form" :inline="true">
+          <el-form-item name="ID" label="ID" label-width="80px">
+            <el-input v-model="form.wp_station_nodeBid" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="StationName" label="名称" label-width="80px">
+            <el-input v-model="form.wp_station_name" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="Altitude" label="海拔" label-width="80px">
+            <el-input v-model="form.wp_station_height" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="StationLongitude" label="经度" label-width="80px">
+            <el-input v-model="form.wp_station_longitude" auto-complete="off"></el-input>
+          </el-form-item>
+           <el-form-item name="StationLatitude" label="纬度" label-width="80px">
+            <el-input v-model="form.wp_station_latitude" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="TAC" label="TAC" label-width="80px">
+            <el-input v-model="form.wp_station_tac" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="WorkMode" label="工作模式" label-width="80px">
+            <el-input v-model="form.wp_station_workModel" auto-complete="off"></el-input>
+          </el-form-item>
+          
+          <!-- <el-form-item label="与运营商数据是否一致" label-width="80px">
+            <el-select v-model="form.wp_station_statusStr" placeholder="请选择当前计划的状态">
+          		<el-option label="一致" value="一致"></el-option>
+          		<el-option label="不一致" value="不一致"></el-option>
+          	</el-select>
+          </el-form-item> -->
+          
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+        </div>
+      </el-dialog>
+      
+      
+      <!-- 修改弹出框 -->
+      <el-dialog title="ModifyInformation" :visible.sync="dialogFormVisible1">
+        <el-form :model="form" :inline="true">
+          <el-form-item name="ID" label="ID" label-width="80px">
+            <el-input v-model="form.wp_station_nodeBid" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="StationName" label="名称" label-width="80px">
+            <el-input v-model="form.wp_station_name" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="Altitude" label="海拔" label-width="80px">
+            <el-input v-model="form.wp_station_height" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="StationLongitude" label="经度" label-width="80px">
+            <el-input v-model="form.wp_station_longitude" auto-complete="off"></el-input>
+          </el-form-item>
+           <el-form-item name="StationLatitude" label="纬度" label-width="80px">
+            <el-input v-model="form.wp_station_latitude" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="TAC" label="TAC" label-width="80px">
+            <el-input v-model="form.wp_station_tac" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="WorkMode" label="工作模式" label-width="80px">
+            <el-input v-model="form.wp_station_workModel" auto-complete="off"></el-input>
+          </el-form-item>
+          
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+        	<el-button @click="changeCancel">cancel</el-button>
+            <el-button type="primary" @click="changeSave">determine</el-button>
+        </div>
+      </el-dialog>
+      
+      
+    </div>
+  </body>
+  <!-- 先引入 Vue -->
+  <script  src="../stat/js/jquery-2.1.1.min.js"></script>
+  <script src="../js/vue.js"></script>
+  <script src="../js/index.js"></script>  
+  <script  src="../stat/js/ajaxupload.js"></script>
+  <script src="../js/fileJs/workParticipationStation.js"></script>
+  <script src="../js/jquery.i18n.properties-1.0.9.js"></script>
+  <script src="../js/language.js"></script>
+  <script>
+	  $('#upfile').on('change',function(e){
+		  $('#upspan').html(e.currentTarget.files[0].name) 
+	  })
+  </script>
+</html>

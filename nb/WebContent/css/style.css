@@ -1,0 +1,108 @@
+*{
+	padding: 0;
+    margin: 0;
+}
+
+li {
+	list-style: none;
+}
+
+a {
+	text-decoration: none;
+}
+
+.logo{
+  display: inline-block;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  background: #20A0FF;
+  padding: 0px 20px;
+  box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing:border-box;
+}
+.sysname{
+  font-size: 24px;
+  color: #FFF;
+}
+.navL{
+  min-height: 600px;
+}
+.welcDiv{
+  float: right;
+  color: #FFF; 
+  font-size: 14px;
+}
+
+.tableDiv{
+  padding: 20px;
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+}
+.tableDiv{
+  padding: 20px;
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+}
+.buttonDiv{
+  padding: 2px 20px 20px 20px;
+  /* text-align: center; */
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+  position:relative;
+}
+.spanbox{
+	padding: 0 20px;
+	box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+  height:20px;
+}
+.spanbox span{
+	width:210px;
+	font: 600 12px/20px "microsoft yahei";
+	float:left;
+	text-align:left;
+	color:#838B8B;
+}
+.exportBtn{
+  margin-left: 50px !important;
+}
+.searchInput{
+  width: 200px;
+}
+
+.pageDiv{
+  text-align: right;
+  margin-top: 20px;
+}
+.closebtn{
+	width:30px;
+	height:30px;
+	padding:4px 6px;
+	color:#808080;
+	position:absolute;
+	top:4px;
+	z-index:2;
+	border:none;
+}
+.closebtn0{
+	left:185px;
+}
+.closebtn1{
+	left:380px;
+}
+.closebtn2{
+	left:590px;
+}
+.closebtn3{
+	left:800px;
+}
+
+
+
+

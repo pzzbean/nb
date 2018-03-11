@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.localworkparam.mapper.CellMapper">
+	<resultMap id="CellResultMap" type="com.ibase.web.localworkparam.domain.Cell">
+		<id column="cell_id" property="cellId" />
+		<result column="cell_name" jdbcType="VARCHAR" property="cellName" />
+		<result column="mechanical_dip_angle" jdbcType="VARCHAR"
+			property="mechanicalDipAngle" />
+		<result column="antenna_height" jdbcType="VARCHAR" property="antennaHeight" />
+		<result column="azimuth" jdbcType="VARCHAR" property="azimuth" />
+		<result column="total_dip_angle" jdbcType="VARCHAR" property="totalDipAngle" />
+		<result column="prefabricated_dip_angle" jdbcType="VARCHAR"
+			property="prefabricatedDipAngle" />
+		<result column="station_id " property="stationId" />
+		<result column="section " jdbcType="VARCHAR" property="section" />
+	</resultMap>
+
+	<insert id="addCell" parameterType="com.ibase.web.localworkparam.domain.Cell">
+		<selectKey keyProperty="cellId" order="AFTER" resultType="Integer">
+			SELECT last_insert_id()
+		</selectKey>
+		insert into cell
+		(
+		cell_name,
+		mechanical_dip_angle,
+		antenna_height,
+		azimuth,
+		total_dip_angle,
+		prefabricated_dip_angle,
+		station_id,
+		section,
+		frequency,
+		pci,
+		rs_power
+		)
+		values
+		(
+		#{cellName},
+		#{mechanicalDipAngle},
+		#{antennaHeight},
+		#{azimuth},
+		#{totalDipAngle},
+		#{prefabricatedDipAngle},
+		#{stationId},
+		#{section},
+		#{frequency},
+		#{pci},
+		#{rsPower}
+		)
+	</insert>
+
+	<select id="queryCells" parameterType="com.ibase.web.localworkparam.domain.Cell"
+		resultMap="CellResultMap">
+		select * from cell
+		ORDER BY cell_id DESC
+		<if test="page != null">
+			<![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+		</if>
+	</select>
+
+	<select id="countCells" resultType="Integer">
+		select count(*) from cell
+	</select>
+
+	<update id="updateStationId" parameterType="com.ibase.web.localworkparam.domain.Station">
+		UPDATE cell SET
+		station_id = 0
+		WHERE station_id=#{stationId}
+	</update>
+	
+	<delete id="deleteCell" parameterType="com.ibase.web.localworkparam.domain.Cell">
+		delete from cell where cell_id=#{cellId}
+	</delete>
+	
+	<delete id="deleteCellAndCategory" parameterType="com.ibase.web.localworkparam.domain.Cell">
+		delete from cell_and_category where cell_id=#{cellId}
+	</delete>
+	
+	<update id="updateCell" parameterType="com.ibase.web.localworkparam.domain.Cell">
+		update cell set
+		cell_name=#{cellName},
+		mechanical_dip_angle=#{mechanicalDipAngle},
+		antenna_height=#{antennaHeight},
+		azimuth=#{azimuth},
+		total_dip_angle=#{totalDipAngle},
+		prefabricated_dip_angle=#{prefabricatedDipAngle},
+		station_id=#{stationId},
+		section=#{section},
+		frequency=#{frequency},
+		pci=#{pci},
+		rs_power=#{rsPower}
+		where cell_id=#{cellId}
+	</update>
+	
+	<select id="queryCellsByStationId" parameterType="com.ibase.web.localworkparam.domain.Station"
+		resultMap="CellResultMap">
+		select * from cell
+		where station_id=#{stationId}
+	</select>
+
+</mapper>

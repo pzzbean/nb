@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.log.mapper.LogMapper">
+	<resultMap type="com.ibase.web.testplan.domain.TemporaryTestplan" id="TemporaryTestplan">
+		<id column="temporary_testplan_id" property="temporaryTestplanId" />
+		<result column="user_id" property="userId"/>
+		<result column="test_engineer" property="testEngineer"/>
+		<result column="test_engineer_phone" property="testEngineerPhone"/>
+		<result column="plan_creator" property="planCreator"/>
+		<result column="plan_creator_phone" property="planCreatorPhone"/>
+		<result column="plan_create_time" property="planCreateTime"/>
+		<result column="plan_reviser" property="planReviser"/>
+		<result column="plan_revise_time" property="planReviseTime"/>
+		<result column="state" property="state"/>
+		<result column="test_start_time" property="testStartTime"/>
+		<result column="test_end_time" property="testEndTime"/>
+		<result column="station_no" property="stationNo"/>
+	</resultMap>
+	<select id="queryByStationNo" parameterType="com.ibase.web.log.domain.LogCXDomain" resultType="com.ibase.web.roadtest.domain.TemporayWorkparamDomain2">
+		select * from temporay_workparam2 where station_No = #{station_No} and ci = #{ci}
+	</select>
+	
+	<select id="queryByUIAndSN" parameterType="com.ibase.web.log.domain.LogCXDomain" resultType="com.ibase.web.roadtest.domain.CellIndexResultTotal">
+		select * from temporary_log  join (
+		select MAX(temporary_log_id)as id
+		from temporary_log where station_No=#{station_No} and testDate=#{testDate}
+		GROUP BY ci)as log on temporary_log.temporary_log_id=log.id
+	</select>
+	
+	<select id="queryUserBySnoAndDate" parameterType="com.ibase.web.log.domain.LogCXDomain" resultMap="TemporaryTestplan">
+		select * from temporary_testplan where station_no=#{station_No} and test_start_time=#{testDate}
+	</select>
+	<insert id="insertLog" parameterType="com.ibase.web.log.domain.LogDomain">
+		<selectKey keyProperty="log_id" order="AFTER" resultType="long">
+			SELECT last_insert_id()
+		</selectKey>
+		insert into log(
+		plane_id,
+		station_no,
+		cell_section,
+		log_RSRP,
+		log_SINR,
+		log_iperfTop_rate,
+		log_iperfDown_rate,
+		log_delayTime,
+		log_openRate,
+		log_ReselectDelay,
+		log_AttachDelay,
+		status,
+		log_desc,
+		log_creator,
+		log_create_time,
+		log_version,
+		log_cellID,
+		log_PCI,
+		log_RSSI,
+		log_UDPTop_rate,
+		log_UDPDown_rate,
+		log_FTPTop_rate,
+		log_FTPDown_rate,
+		log_PingOld
+		)values(
+		#{plane_id},
+		#{station_no},
+		#{cell_section},
+		#{log_RSRP},
+		#{log_SINR},
+		#{log_iperfTop_rate},
+		#{log_iperfDown_rate},
+		#{log_delayTime},
+		#{log_openRate},
+		#{log_ReselectDelay},
+		#{log_AttachDelay},
+		#{status},
+		#{log_desc},
+		#{log_creator},
+		now(),
+		#{log_version},
+		#{log_cellID},
+		#{log_PCI},
+		#{log_RSSI},
+		#{log_UDPTop_rate},
+		#{log_UDPDown_rate},
+		#{log_FTPTop_rate},
+		#{log_FTPDown_rate},
+		#{log_PingOld}
+
+		)
+	</insert>
+	<select id="countLog" parameterType="com.ibase.web.log.domain.LogDomain"
+		resultType="long">
+		select count(1) from log
+		where 1=1
+		<if test="log_id > 0">
+			AND log_id = #{log_id}
+		</if>
+		<if test="plane_id > 0">
+			AND plane_id = #{plane_id}
+		</if>
+		<if test="station_no != null and station_no.trim().length()>0">
+			AND station_no like #{station_no}
+		</if>
+		<if test="cell_section != null and cell_section.trim().length()>0">
+			AND cell_section like #{cell_section}
+		</if>
+		<if test=" log_RSRP!= null and log_RSRP.trim().length()>0">
+			AND log_RSRP like #{log_RSRP}
+		</if>
+		<if test=" log_SINR!= null and log_SINR.trim().length()>0">
+			AND log_SINR like #{log_SINR}
+		</if>
+		<if
+			test=" log_iperfTop_rate !=  null and log_iperfTop_rate.trim().length()>0">
+			AND log_iperfTop_rate like #{log_iperfTop_rate}
+		</if>
+		<if
+			test=" log_iperfDown_rate!= null and log_iperfDown_rate.trim().length()>0">
+			AND log_iperfDown_rate like #{log_iperfDown_rate}
+		</if>
+		<if test=" log_delayTime!= null and log_delayTime.trim().length()>0">
+			AND log_delayTime like #{log_delayTime}
+		</if>
+		<if test=" log_openRate!= null and log_openRate.trim().length()>0">
+			AND log_openRate like #{log_openRate}
+		</if>
+		<if test=" status> 0">
+			AND status = #{status}
+		</if>
+		<if test=" log_desc!= null and log_desc.trim().length()>0">
+			AND log_desc like #{log_desc}
+		</if>
+		<if test=" log_creator> 0">
+			AND log_creator = #{log_creator}
+		</if>
+		<if test=" log_create_time!= null and log_create_time.trim().length()>0">
+			AND log_create_time like #{log_create_time}
+		</if>
+		<if test=" log_version!= null and log_version.trim().length()>0">
+			AND log_version like #{log_version}
+		</if>
+		<if test=" log_cellID != null and log_cellID.trim().length()>0">
+			AND log_cellID like #{log_cellID}
+		</if>
+		<if test=" log_PCI!= null and log_PCI.trim().length()>0">
+			AND log_PCI like #{log_PCI}
+		</if>
+		<if test=" log_RSSI!= null and log_RSSI.trim().length()>0">
+			AND log_RSSI like #{log_RSSI}
+		</if>
+	</select>
+
+	<select id="queryLog" parameterType="com.ibase.web.log.domain.LogDomain"
+		resultType="com.ibase.web.log.domain.LogDomain">
+		select
+		*
+		from log
+		where 1=1
+		<if test="log_id > 0">
+			AND log_id = #{log_id}
+		</if>
+		<if test="plane_id > 0">
+			AND plane_id = #{plane_id}
+		</if>
+		<if test="station_no != null and station_no.trim().length()>0">
+			AND station_no like #{station_no}
+		</if>
+		<if test="cell_section != null and cell_section.trim().length()>0">
+			AND cell_section like #{cell_section}
+		</if>
+		<if test=" log_RSRP!= null and log_RSRP.trim().length()>0">
+			AND log_RSRP like #{log_RSRP}
+		</if>
+		<if test=" log_SINR!= null and log_SINR.trim().length()>0">
+			AND log_SINR like #{log_SINR}
+		</if>
+		<if
+			test=" log_iperfTop_rate!= null and log_iperfTop_rate.trim().length()>0">
+			AND log_iperfTop_rate like #{log_iperfTop_rate}
+		</if>
+		<if
+			test=" log_iperfDown_rate!= null and log_iperfDown_rate.trim().length()>0">
+			AND log_iperfDown_rate like #{log_iperfDown_rate}
+		</if>
+		<if test=" log_delayTime!= null and log_delayTime.trim().length()>0">
+			AND log_delayTime like #{log_delayTime}
+		</if>
+		<if test=" log_openRate!= null and log_openRate.trim().length()>0">
+			AND log_openRate like #{log_openRate}
+		</if>
+		<if test=" status> 0">
+			AND status = #{status}
+		</if>
+		<if test=" log_desc!= null and log_desc.trim().length()>0">
+			AND log_desc like #{log_desc}
+		</if>
+		<if test=" log_creator> 0">
+			AND log_creator = #{log_creator}
+		</if>
+		<if test=" log_create_time!= null and log_create_time.trim().length()>0">
+			AND log_create_time like #{log_create_time}
+		</if>
+		<if test=" log_version!= null and log_version.trim().length()>0">
+			AND log_version like #{log_version}
+		</if>
+		<if test=" log_cellID != null and log_cellID.trim().length()>0">
+			AND log_cellID like #{log_cellID}
+		</if>
+		<if test=" log_PCI!= null and log_PCI.trim().length()>0">
+			AND log_PCI like #{log_PCI}
+		</if>
+		<if test=" log_RSSI!= null and log_RSSI.trim().length()>0">
+			AND log_RSSI like #{log_RSSI}
+		</if>
+		ORDER BY log_id ASC
+		<if test="page != null">
+					<![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+		</if>
+	</select>
+
+	<!-- 单验数据部分 -->
+	<select id="countSingle" parameterType="com.ibase.web.log.domain.SingleTestReport"
+		resultType="String">
+		select count(1) from (
+		select count(1) from log l
+		left join plane p on l.plane_id=p.plan_id
+		where 1=1
+		<if test=" station_no!= null and station_no.trim().length()>0">
+			AND station_no like #{station_no}
+		</if>
+		<if
+			test=" plan_test_engineer!= null and plan_test_engineer.trim().length()>0">
+			AND plan_test_engineer like #{plan_test_engineer}
+		</if>
+		<if
+			test=" plane_create_time!= null and plane_create_time.trim().length()>0">
+			AND plane_create_time like #{plane_create_time}
+		</if>
+		group by l.plane_id
+		HAVING (select count(1) from log l2 where l.plane_id = l2.plane_id ) >=3
+		) a
+	</select>
+
+	<select id="querySigneTestReport" parameterType="com.ibase.web.log.domain.SingleTestReport"
+		resultType="com.ibase.web.log.domain.SingleTestReport">
+		select l.plane_id
+		plane_id,station_no,plan_test_engineer,plane_create_time,plane_test_time,user_id
+		from log l
+		left join plane p on l.plane_id=p.plan_id
+		where 1=1
+		<if test=" station_no!= null and station_no.trim().length()>0">
+			AND station_no like #{station_no}
+		</if>
+		<if
+			test=" plan_test_engineer!= null and plan_test_engineer.trim().length()>0">
+			AND plan_test_engineer like #{plan_test_engineer}
+		</if>
+		<if
+			test=" plane_create_time!= null and plane_create_time.trim().length()>0">
+			AND plane_create_time like #{plane_create_time}
+		</if>
+		group by l.plane_id
+		HAVING (select count(*) from log l2 where l.plane_id = l2.plane_id ) >=3
+		ORDER BY plane_test_time DESC
+		<if test="page != null">
+		 <![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+		</if>
+	</select>
+	<update id="updatetLog" parameterType="com.ibase.web.log.domain.LogDomain">
+		UPDATE `log` SET 
+			 plane_id = 1,
+	
+			station_no = #{station_no},
+		
+		    cell_section = #{cell_section},
+		
+		    log_RSRP = #{log_RSRP},
+		
+			log_SINR = #{log_SINR},
+		
+			log_iperfTop_rate = #{log_iperfTop_rate},
+		
+			log_iperfDown_rate = #{log_iperfDown_rate},
+		
+			log_delayTime = #{log_delayTime},
+	
+			log_openRate = #{log_openRate},
+			
+			log_ReselectDelay=#{log_ReselectDelay},
+			
+			log_AttachDelay=#{log_AttachDelay},
+			
+			status = #{status},
+	
+			log_desc = #{log_desc},
+	
+			log_creator = #{log_creator},
+	
+			log_create_time = #{log_create_time},
+		
+			log_version = #{log_version},
+		
+			log_cellID = #{log_cellID},
+	
+			log_PCI = #{log_PCI},
+	
+			log_RSSI = #{log_RSSI},
+		
+			log_UDPTop_rate = #{log_UDPTop_rate},
+	
+			log_UDPDown_rate = #{log_UDPDown_rate},
+		
+			log_FTPTop_rate = #{log_FTPTop_rate},
+		
+			log_FTPDown_rate = #{log_FTPDown_rate},
+		
+			log_PingOld = #{log_PingOld}
+		
+		WHERE log_id IN (11,12,13)
+	</update>
+
+</mapper>

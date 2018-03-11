@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.testplan.mapper.TestplanMapper">
+	<resultMap id="TestplanResultMap" type="com.ibase.web.testplan.domain.Testplan">
+		<id column="testplan_id" property="testplanId" />
+		<result column="user_id " property="userId" />	
+		<result column="test_engineer" property="testEngineer" />
+		<result column="test_engineer_phone" property="testEngineerPhone" />
+		<result column="plan_creator" property="planCreator" />
+		<result column="plan_creator_phone" property="planCreatorPhone" />
+		<result column="plan_create_time" property="planCreateTime" />
+		<result column="plan_reviser" property="planReviser" />
+		<result column="plan_revise_time" property="planReviseTime" />
+		<result column="state" property="state" />
+		<result column="test_start_time" property="testStartTime" />
+		<result column="test_end_time" property="testEndTime" />
+		<collection property="planAndStations" ofType="PlanAndStation">
+			<id column="plan_and_station_id" property="planAndStationId" />
+			<result column="testplan_id " property="testplanId" />	
+			<result column="station_id" property="stationId" />
+			<result column="station_property_id" property="stationPropertyId" />
+			<collection property="stationAndCells" ofType="StationAndCell">
+				<id column="station_and_cell_id" property="stationAndCellId" />
+				<result column="station_id " property="stationId" />	
+				<result column="cell_id" property="cellId" />
+				<result column="testplan_id" property="testplanId" />
+				<result column="category" property="category" />
+				<collection property="cellAndIndexs" ofType="CellAndIndex">
+					<id column="cell_and_index_id" property="cellAndIndexId" />
+					<result column="cell_id "  property="cellId" />	
+					<result column="id" property="id" />
+					<result column="testplan_id" property="testplanId" />
+					<result column="value" property="value" />
+					<result column="category_id" property="categoryId" />
+					<collection property="indexAndCollocations" ofType="IndexAndCollocation">
+						<id column="index_and_collocation_id" property="indexAndCollocationId" />
+						<result column="index_id " property="indexId" />	
+						<result column="collocation_id" property="collocationId" />
+						<result column="testplan_id" property="testplanId" />
+						<result column="collocation_value" property="collocationValue" />
+						
+					</collection>
+				</collection>
+			</collection>
+		</collection>
+	</resultMap>
+
+	<select id="queryTestplans" resultMap="TestplanResultMap">
+		SELECT testplan.testplan_id,
+		user_id,
+		test_engineer,
+		test_engineer_phone,
+		plan_creator,
+		plan_creator_phone,
+		plan_create_time,
+		plan_reviser ,
+		plan_revise_time,
+		state,
+		test_start_time,
+		test_end_time,
+		plan_and_station.station_id,
+		station.`station_name`,
+		station_property_id,
+		station_and_cell.cell_id,
+		cell.`cell_name`,
+		station_and_cell.category_id,
+		cell_and_index.id,
+		collocation_id
+		FROM testplan
+		JOIN plan_and_station ON testplan.`testplan_id`=plan_and_station.`testplan_id` 
+		JOIN station_and_cell ON plan_and_station.`testplan_id`=station_and_cell.`testplan_id`
+		JOIN cell_and_index ON station_and_cell.`testplan_id`=cell_and_index.`testplan_id`
+		JOIN index_and_collocation_testplan ON cell_and_index.`testplan_id`=index_and_collocation_testplan.`testplan_id`
+		JOIN station ON station.`station_id`=plan_and_station.`station_id`
+		JOIN cell ON cell.`cell_id`=station_and_cell.`cell_id`
+	</select>
+	
+	<select id="queryTestplanByTestplanId" parameterType="com.ibase.web.testplan.domain.Testplan"
+								resultMap="TestplanResultMap">
+		SELECT testplan.testplan_id,
+		user_id,
+		test_engineer,
+		test_engineer_phone,
+		plan_creator,
+		plan_creator_phone,
+		plan_create_time,
+		plan_reviser ,
+		plan_revise_time,
+		state,
+		test_start_time,
+		test_end_time,
+		plan_and_station.station_id,
+		station.`station_name`,
+		station_property_id,
+		station_and_cell.cell_id,
+		cell.`cell_name`,
+		station_and_cell.category_id,
+		cell_and_index.id,
+		collocation_id
+		FROM testplan
+		JOIN plan_and_station ON testplan.`testplan_id`=plan_and_station.`testplan_id` 
+		JOIN station_and_cell ON plan_and_station.`testplan_id`=station_and_cell.`testplan_id`
+		JOIN cell_and_index ON station_and_cell.`testplan_id`=cell_and_index.`testplan_id`
+		JOIN index_and_collocation_testplan ON cell_and_index.`testplan_id`=index_and_collocation_testplan.`testplan_id`
+		JOIN station ON station.`station_id`=plan_and_station.`station_id`
+		JOIN cell ON cell.`cell_id`=station_and_cell.`cell_id`
+		WHERE testplan.testplan_id = #{testplanId}
+	</select>
+	
+	<!-- <insert id="addTestplan" parameterType="com.ibase.web.testplan.domain.Testplan" >
+		<selectKey keyProperty="testplanId" order="AFTER" resultType="Integer">
+			SELECT last_insert_id()
+		</selectKey>
+	insert into testplan
+	(
+		user_id,
+		test_engineer,
+		test_engineer_phone,
+		plan_creator,
+		plan_creator_phone,
+		plan_create_time,
+		plan_reviser,
+		plan_revise_time,
+		state,
+		test_start_time,
+		test_end_time
+	)
+	values
+	(
+		#{userId},
+		#{testEngineer},
+		#{testEngineerPhone},
+		#{planCreator},
+		#{planCreatorPhone},
+		#{planCreateTime},
+		#{planReviser},
+		#{planReviseTime},
+		#{state},
+		#{testStartTime},
+		#{testEndTime}
+	)
+	insert into plan_and_station
+	(
+		testplan_id,
+		station_id,
+		station_property_id
+	)
+	values
+	(
+		#{Testplan.testplanId},
+		#{stationId},
+		#{stationPropertyId}
+	)
+	insert into station_and_cell
+	(
+		station_id,
+		cell_id,
+		testplan_id,
+		category
+	)
+	values
+	(
+		#{stationId},
+		#{cellId},
+		#{Testplan.testplanId},
+		#{category}
+	)
+	insert into cell_and_index
+	(
+		cell_id,
+		index_id,
+		testplan_id,
+		index_value
+	)
+	values
+	(
+		#{cellId},
+		#{indexId},
+		#{Testplan.testplanId},
+		#{indexValue}
+	)
+	insert into index_and_collocation_testplan
+	(
+		index_id,
+		collocation_id,
+		testplan_id,
+		collocation_value
+	)
+	values
+	(
+		#{indexId},
+		#{collocationId},
+		#{Testplan.testplanId},
+		#{collocationValue}
+	)
+	</insert> -->
+	
+	<delete id="deleteTestplan" parameterType="com.ibase.web.testplan.domain.Testplan">
+		DELETE FROM testplan WHERE testplan.testplan_id =#{testplanId};
+		DELETE FROM plan_and_station WHERE plan_and_station.testplan_id =#{testplanId};
+		DELETE FROM station_and_cell WHERE station_and_cell.testplan_id =#{testplanId};
+		DELETE FROM cell_and_index WHERE cell_and_index.testplan_id =#{testplanId};
+		DELETE FROM index_and_collocation_testplan WHERE index_and_collocation_testplan.testplan_id =#{testplanId};
+	</delete>
+	
+	
+	<select id="queryTestplanByUserId" parameterType="java.lang.Long"
+								resultMap="TestplanResultMap">
+		SELECT testplan.testplan_id,
+		user_id,
+		test_engineer,
+		test_engineer_phone,
+		plan_creator,
+		plan_creator_phone,
+		plan_create_time,
+		plan_reviser ,
+		plan_revise_time,
+		state,
+		test_start_time,
+		test_end_time,
+		plan_and_station.station_id,
+		station.`station_name`,
+		station_property_id,
+		station_and_cell.cell_id,
+		cell.`cell_name`,
+		station_and_cell.category_id,
+		cell_and_index.id,
+		collocation_id
+		FROM testplan
+		JOIN plan_and_station ON testplan.`testplan_id`=plan_and_station.`testplan_id` 
+		JOIN station_and_cell ON plan_and_station.`testplan_id`=station_and_cell.`testplan_id`
+		JOIN cell_and_index ON station_and_cell.`testplan_id`=cell_and_index.`testplan_id`
+		JOIN index_and_collocation_testplan ON cell_and_index.`testplan_id`=index_and_collocation_testplan.`testplan_id`
+		JOIN station ON station.`station_id`=plan_and_station.`station_id`
+		JOIN cell ON cell.`cell_id`=station_and_cell.`cell_id`
+		WHERE testplan.`user_id`=#{userId}
+	</select>
+	
+</mapper>

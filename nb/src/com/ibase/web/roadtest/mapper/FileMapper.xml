@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.roadtest.mapper.FileMapper">
+	<resultMap id="SaveLogFileResultMap" type="com.ibase.web.roadtest.domain.SaveLogFile">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="user_id" jdbcType="VARCHAR"
+			property="userId" />
+		<result column="plan_id" jdbcType="VARCHAR"
+			property="planId" />
+		<result column="station_no" jdbcType="VARCHAR" property="stationNo" />
+		<result column="test_date" jdbcType="VARCHAR" property="testDate" />
+		<result column="logfile_name" jdbcType="VARCHAR" property="logfileName" />
+		<result column="logfile_url" jdbcType="VARCHAR" property="logfileUrl" />
+	</resultMap>
+
+	<insert id="insertFiles" parameterType="com.ibase.web.roadtest.domain.SaveLogFile">
+		insert into savelogfile
+		(
+			user_id,
+			plan_id,
+			station_no,
+			test_date,
+			logfile_name,
+			logfile_url
+		)
+		values
+		(
+			#{userId},
+			#{planId},
+			#{stationNo},
+			#{testDate},
+			#{logfileName},
+			#{logfileUrl}
+			
+		)
+	</insert>
+	
+</mapper>

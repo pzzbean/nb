@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>PerformanceLog</title>
+    <meta id="i18n_pagename" content="index-common">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/style.css">
+  </head>
+  <body>
+    <div id="app">
+      <!-- 顶部条 -->
+      <el-row>
+        <el-col :span="24">
+          <div class="logo" href="#">
+            <a href="javascript:;" class="sysname">nb</a>
+            <!-- 用户名 -->
+            <div class="welcDiv">         		      
+		            <select id="language">
+		                <option value="zh-CN">中文简体</option>		   
+		                <option value="en">English</option>
+		            </select>
+              <span class="i18n">welcomeAdmin</span>
+              <el-button class="i18n">login</el-button>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <!-- 左侧导航 -->
+        <el-col :span="4">
+          <el-menu default-active="3" class="el-menu-vertical-demo navL">
+            <a class="ai18n" href="/nb/html/singleTestReport.html"><el-menu-item index="1"><i class="el-icon-menu"></i><span class="i18n">SingleReport</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/roadTest.html"><el-menu-item index="2"><i class="el-icon-menu"></i><span class="i18n">RoadTest</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/performanceLogs.html"><el-menu-item index="3"><i class="el-icon-setting"></i><span class="i18n">PerformanceLog</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/workParticipation.html"><el-menu-item index="4"><i class="el-icon-menu"></i><span class="i18n">ParameterManagement</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/signallingDisplay.html"><el-menu-item index="5"><i class="el-icon-setting"></i><span class="i18n">SignallingDisplay</el-menu-item></a>
+            <a class="ai18n" href="/nb/html/testPlan.html"><el-menu-item index="6"><i class="el-icon-setting"></i><span class="i18n">TestPlan</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/userManage.html"><el-menu-item index="7"><i class="el-icon-menu"></i><span class="i18n">UserManagement</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/testItemConfiguration.html"><el-menu-item index="8"><i class="el-icon-setting"></i><span class="i18n">ConfigurationItem</el-menu-item></a>
+          </el-menu>
+        </el-col>
+        <!-- 表格 -->
+        <el-col :span="20">
+          <div class="tableDiv">
+            <!-- 增删改查按钮部分 -->
+             <div class="spanbox">
+              <span class="searchInput">StationNo</span>
+              <span class="searchInput">Cell</span>
+            </div>
+            <div class="buttonDiv">
+              <el-button v-show="closeArr[0]" @click="closeBtn(0)" class="closebtn closebtn0" icon="close"></el-button>
+              <el-button v-show="closeArr[1]" @click="closeBtn(1)" class="closebtn closebtn1" icon="close"></el-button>
+              <el-input v-model="station_no"  @change="inputChange(0)" placeholder="StationNoNull" class="searchInput"></el-input>
+              <el-input v-model="cell_section" @change="inputChange(1)" placeholder="CellNull" class="searchInput"></el-input>
+              <el-button type="primary" icon="search" @click="search">search</el-button>
+            </div>
+            <!-- 表格内容 -->
+            <template>
+              <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="station_no" label="StationNo" width="100"></el-table-column>
+                <el-table-column prop="cell_section" label="Cell" width="100"></el-table-column>
+                <el-table-column prop="statusStr" label="pass" width="120"></el-table-column>
+                <el-table-column prop="log_create_time" label="time" width="200"></el-table-column> 
+                <el-table-column prop="log_desc" label="passDetails" ></el-table-column>
+                <el-table-column label="operation" width="150">
+                  <template scope="scope">
+                    <el-button @click="detail(scope.row)" type="primary" size="small">details</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+
+              <!-- 分页 -->
+              <div class="block pageDiv">
+                <el-pagination
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  :current-page="currentPage"
+                  :page-size="pageSize"
+                  layout="prev, pager, next, jumper"
+                  :total="totalRows">
+                </el-pagination>
+              </div>
+            </template>
+          </div>
+        </el-col>
+      </el-row>
+      <!-- 详情弹出框 -->
+      <el-dialog title="details" :visible.sync="dialogFormVisible">
+        <el-form :model="form" :inline="true">
+          <el-form-item name="StationNo" label="站号" label-width="100px">
+            <el-input v-model="form.station_no" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="cell" label="小区" label-width="100px">
+            <el-input v-model="form.cell_section" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="RSRP" label="RSRP" label-width="100px">
+            <el-input v-model="form.log_RSRP" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="SINR" label="SINR" label-width="100px">
+            <el-input v-model="form.log_SINR" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="IperfUplinkRate" label="iperf上行速率 " label-width="100px">
+            <el-input v-model="form.log_iperfTop_rate" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="DownlinkRateOfIperf" label="iperf下行速率 " label-width="100px">
+            <el-input v-model="form.log_iperfDown_rate" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="TimeDelay" label="时延" label-width="100px">
+            <el-input v-model="form.log_delayTime" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="RRCConnectionRate" label="RRC接通率" label-width="100px">
+            <el-input v-model="form.log_openRate" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="ReelectionDelay" label="重选时延" label-width="100px">
+            <el-input v-model="form.log_ReselectDelay" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="ConnectionDelay" label="接通时延" label-width="100px">
+            <el-input v-model="form.log_AttachDelay" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="version" label="版本" label-width="100px">
+            <el-input v-model="form.log_version" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="CellId" label="小区id" label-width="100px">
+            <el-input v-model="form.log_cellID" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="PCI" label="PCI" label-width="100px">
+            <el-input v-model="form.log_PCI" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="RSSI" label="RSSI" label-width="100px">
+            <el-input v-model="form.log_RSSI" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="UDPUplinkRate" label="UDP上行速率" label-width="100px">
+            <el-input v-model="form.log_UDPTop_rate" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="DownlinkRateOfUDP" label="UDP下行速率" label-width="100px">
+            <el-input v-model="form.log_UDPDown_rate" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="FTPUplinkRate" label="FTP上行速率" label-width="100px">
+            <el-input v-model="form.log_FTPTop_rate" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="DownlinkRateOfFTP" label="FTP下行速率" label-width="100px">
+            <el-input v-model="form.log_FTPDown_rate" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="PingOld" label="PingOld" label-width="100px">
+            <el-input v-model="form.log_PingOld" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-row>
+	          <el-form-item name="NonStandardSpecification" label="不达标说明" label-width="100px">
+	          	<el-input type="textarea" :rows="2" v-model="form.log_desc" style="width:490px"></el-input>
+	          </el-form-item>
+	      </el-row>
+          <el-form-item name="Time" label="时间" label-width="100px">
+            <el-input v-model="form.log_create_time" auto-complete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="detailCancel">cancel</el-button>
+        </div>
+      </el-dialog>
+      
+    </div>
+  </body>
+  <!-- 先引入 Vue -->
+  <script src="../js/vue.js"></script>
+  <script src="../js/index.js"></script>
+  <script type="text/javascript" src="../stat/js/jquery-2.1.1.min.js"></script>
+  <script src="../js/fileJs/performanceLogs.js"></script>
+  <script src="../js/jquery.i18n.properties-1.0.9.js"></script>
+  <script src="../js/language.js"></script>
+</html>

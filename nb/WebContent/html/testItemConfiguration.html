@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>ConfigurationItem</title>
+		<meta id="i18n_pagename" content="index-common">
+    	<link rel="stylesheet" href="../css/index.css">
+    	<link rel="stylesheet" href="../css/style.css">
+    	<link rel="stylesheet" href="../css/testItemConfiguration.css" >
+	</head>
+	
+	<body>
+		<div id="app">
+				<!-- 顶部条 -->
+				<el-row> <el-col :span="24">
+				<div class="logo" href="#">
+					<a href="javascript:;" class="sysname">nb</a>
+					<!-- 用户名 -->
+					<div class="welcDiv">
+						<select id="language">
+							<option value="zh-CN">中文简体</option>
+							<option value="en">English</option>
+						</select> <span class="i18n">welcomeAdmin</span>
+						<el-button class="i18n">login</el-button>
+					</div>
+				</div>
+				</el-col> </el-row>
+		
+				<el-row>
+	        	<!-- 左侧导航 -->
+	        	<el-col :span="4">
+		            <el-menu default-active="8" class="el-menu-vertical-demo navL">
+			            <a class="ai18n" href="/nb/html/singleTestReport.html"><el-menu-item index="1"><i class="el-icon-menu"></i><span class="i18n">SingleReport</span></el-menu-item></a>
+			            <a class="ai18n" href="/nb/html/roadTest.html"><el-menu-item index="2"><i class="el-icon-menu"></i><span class="i18n">RoadTest</span></el-menu-item></a>
+			            <a class="ai18n" href="/nb/html/performanceLogs.html"><el-menu-item index="3"><i class="el-icon-setting"></i><span class="i18n">PerformanceLog</span></el-menu-item></a>
+			            <a class="ai18n" href="/nb/html/workParticipation.html"><el-menu-item index="4"><i class="el-icon-menu"></i><span class="i18n">ParameterManagement</span></el-menu-item></a>
+			            <a class="ai18n" href="/nb/html/signallingDisplay.html"><el-menu-item index="5"><i class="el-icon-setting"></i><span class="i18n">SignallingDisplay</el-menu-item></a>
+			            <a class="ai18n" href="/nb/html/testPlan.html"><el-menu-item index="6"><i class="el-icon-setting"></i><span class="i18n">TestPlan</span></el-menu-item></a>
+			            <a class="ai18n" href="/nb/html/userManage.html"><el-menu-item index="7"><i class="el-icon-menu"></i><span class="i18n">UserManagement</span></el-menu-item></a>
+			            <a class="ai18n" href="/nb/html/testItemConfiguration.html"><el-menu-item index="8"><i class="el-icon-setting"></i><span class="i18n">ConfigurationItem</el-menu-item></a>
+			        </el-menu>
+		         </el-col>
+		         
+		         <!-- 右侧指标 -->
+        		<el-col :span="20">
+   				  <div class="tic_right_head">
+            	    <div class="tic_box">
+            	      <span class="searchInput" id="testItem_name">IndexName</span>
+            	      <el-input v-model="testItemName"  placeholder="IndexNameNull" class="searchInput tic_input"  @change="change(testItemName)" ></el-input>
+              		  <el-button type="primary" class="exportBtn query_tic" @click="searchTestItem(testItemName)">SearchIndex</el-button>
+              		  <el-button type="primary" class="exportBtn add_tic" @click="addTestItem">AddIndex</el-button>
+            	    </div>
+            	  </div>
+            	  <!--  显示指标-->
+           		 <div id="tic_button">
+           		 	<template v-for="btn_data in btn_datas">
+           		 		<el-button name="btnDelete" type='primary' class='btn-circle btn-xl' @click='tic_target(btn_data.indexName,btn_data.indexId)'>{{btn_data.indexName}}</el-button>
+           		 	</template>
+				 </div>
+				
+				<!-- 分页 -->
+                 <div class="block pageDiv tic_page">
+	                <el-pagination
+	                  @size-change="handleSizeChange"
+	                  @current-change="handleCurrentChange"
+	                  :current-page.sync="currentPage"
+	                  :page-size="pageSize"
+	                  layout="prev, pager, next, jumper"
+	                  :total="totalRows">
+	                </el-pagination>
+                 </div>
+        	  </el-col>
+	        </el-row>
+	        
+	        <!-- 指标配置弹出框 -->
+	        <el-dialog id="titleDe" v-bind:title="title" :visible.sync="targetFormVisible" class="el_dialog_box">
+			  <el-form :model="form" class="target_el_form">
+				    <el-form-item v-for="conllection in form.conllections" v-bind:name="conllection.collocationName" label=" " :label-width="formLabelWidth">
+				      <input  class="parm_input" v-model="conllection.collocationValue" auto-complete="off" v-show="true" @change="updateParm(conllection.collocationId,conllection.collocationValue)" />
+				      <el-button  class="delete_target_btn" type="danger" icon="el-icon-delete" @click="delete_Conllection(form.indexId,conllection.collocationId)">DeleteConfigure</el-button>
+				    </el-form-item>
+				  <el-button type="success" class="add_target_btn" @click = "addTarget(form.indexId)" >AddConfigure</el-button>
+				  <el-button type="success" class="add_target_btn" @click = "savaParm(form.indexId)" >Preservation</el-button>
+			  </el-form> 
+			  <div slot="footer" class="dialog-footer target_footer">
+			  	<el-button type="primary" class="exportBtn add_tic" @click="deleteTestItem(form.indexId)">DeleteIndex</el-button>
+			    <el-button @click="targetFormVisible = false">cancel</el-button>
+			    <el-button type="primary" @click="targetFormVisible = false">determine</el-button>
+			  </div>
+			</el-dialog>
+			
+			<!-- 添加指标弹出框 -->
+	        <el-dialog id="titleDe1" v-bind:title="title" :visible.sync="addTestItemFormVisible" class="add_target_box">
+			  <el-form :model="form" class="add_target_form">
+			    <el-form-item name="IndexName" label="指标名称" :label-width="formLabelWidth">
+			      <el-input class="target_el_input" v-model="form.testItemName" auto-complete="off"></el-input>
+			    </el-form-item>
+			  </el-form>
+			  <div slot="footer" class="dialog-footer">
+			    <el-button @click="cancelTestItem">cancel</el-button>
+			    <el-button type="primary" @click="saveTestItem(form.testItemName)">determine</el-button>
+			  </div>
+			</el-dialog>
+			
+			<!-- 添加指标参数弹出框 -->
+	        <el-dialog id="titleDe2" v-bind:name="title" :visible.sync="addTargetVisible"  class="add_target_box">
+			  <el-form :model="form" class="add_target_form">
+			    <el-form-item name="SettingName" label="设置参数名称" :label-width="formLabelWidth">
+			     	<template>
+					  <el-select v-model="form.collocationId" placeholder="请选择" class="target_el_input targetName">
+					    <el-option v-for="item in targetParm" :key="item.collocationName" :label="item.collocationName" :value="item.collocationId"></el-option>
+					  </el-select>
+					</template>
+			    </el-form-item>
+			    <el-form-item name="SettingValue" label="设置参数的值" :label-width="formLabelWidth">
+			      <el-input class="target_el_input targetName" v-model="form.targetValue" auto-complete="off"></el-input>
+			    </el-form-item>
+			  </el-form>
+			  <div slot="footer" class="dialog-footer">
+			    <el-button @click="cancelTargetVisible">cancel</el-button>
+			    <el-button type="primary" @click="saveTargetVisible(form.indexId,form.collocationId,form.targetValue)">determine</el-button>
+			  </div>
+			</el-dialog>
+		</div>
+	</body>
+	<!-- 先引入 Vue -->
+    	<script src="../js/vue.js"></script>
+   	 	<script src="../js/index.js"></script>
+   	 	<script type="text/javascript" src="../stat/js/jquery-2.1.1.min.js"></script>
+   	    <script src="../js/fileJs/testItemConfiguration.js"></script>
+   	    <script src="../js/jquery.i18n.properties-1.0.9.js"></script>
+        <script src="../js/language.js"></script>
+</html>

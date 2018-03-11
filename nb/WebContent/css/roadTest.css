@@ -1,0 +1,124 @@
+/*roadtest start*/
+.wrapmap {
+	position: absolute;
+	z-index: 10;
+	top: 60px;
+	right: 0;
+	width: 83.33333%;
+	height: 600px;
+	display: none;
+}
+#allmap {
+	float: left;
+	width: 80%;
+	height: 600px;
+	border-right: 1px solid #000;
+	border-left: 1px solid #000;
+}
+#allmap .closeMapBtn {
+	position: absolute;
+	top: 0;
+	left: 880px;
+	width: 26px;
+	height: 26px;
+	background: #000;
+	font: bold 26px/26px "microsoft yahei";
+	color: #fff;
+	opacity: .5;
+	text-align: center;
+	cursor: pointer;
+}
+
+.particulars {
+	position: absolute;
+	right: 0px;
+	float: left;
+	height: 600px;
+	width: 20%;
+	background: #eef1f6;
+	box-sizing: border-box;
+	-moz-box-sizing:border-box;
+  	-webkit-box-sizing:border-box;
+	padding-left: 10px;
+	overflow: hidden;
+}
+.rsrp,
+.sinr,
+.pci {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	display: none; 
+}
+.rsrpitem,
+.sinritem,
+.pciitem {
+	margin: 5px 0 0 10px;
+}
+
+.descolor {
+	display: inline-block;
+	width: 11px;
+	height: 11px;
+	border-radius: 50%;
+}
+
+.descolor1,
+.descolor11,
+.descolor21 {
+	background: #E80308;
+}
+
+.descolor2,
+.descolor12 {
+	background: #E85C60;
+}
+
+.descolor13 {
+	background: #C637C7;
+}
+
+.descolor3,
+.descolor14 {
+	background: #E6E807;
+}
+
+.descolor4,
+.descolor15,
+.descolor23 {
+	background: #0E14E8;
+}
+
+.descolor5,
+.descolor16,
+.descolor22 {
+	background: #1EDEE8;
+}
+
+.descolor6,
+.descolor17 {
+	background: #0BE857;
+}
+
+.descolor7,
+.descolor18 {
+	background: #0AC723;
+}
+
+.descolor8,
+.descolor19,
+.descolor24 {
+	background: #01A50E;
+}
+
+/*去除百度log及版权信息 start*/
+.BMap_cpyCtrl {
+	display: none;
+}
+
+.anchorBL {
+	display: none;
+}
+/*去除百度log及版权信息 end*/
+/*roadtest end*/
+

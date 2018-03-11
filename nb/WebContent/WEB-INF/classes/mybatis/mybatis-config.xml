@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+<!-- 配置别名包 :可以指定一个包名，MyBatis 会在包名下面搜索需要的 Java Bean，比如:每一个在包 domain.blog 中的 Java Bean，在没有注解的情况下， 
+会使用 Bean 的首字母小写的非限定类名来作为它的别名。 比如 domain.blog.Author 的别名为 author；若有注解，则别名为其注解值。 -->
+ <!--  <typeAliases>
+     <package name="com.ibase.web.*.model"/>
+  </typeAliases>
+   -->
+  <typeAliases>
+  	 <typeAlias type="com.ibase.web.testplan.domain.Testplan" alias="Testplan"/>
+     <typeAlias type="com.ibase.web.testplan.domain.PlanAndStation" alias="PlanAndStation"/>
+     <typeAlias type="com.ibase.web.testplan.domain.StationAndCell" alias="StationAndCell"/>
+     <typeAlias type="com.ibase.web.testplan.domain.CellAndIndex" alias="CellAndIndex"/>
+     <typeAlias type="com.ibase.web.testplan.domain.IndexAndCollocation" alias="IndexAndCollocation"/>
+     <typeAlias type="com.ibase.web.localworkparam.domain.CellProperty" alias="CellProperty"/>
+     <typeAlias type="com.ibase.web.localworkparam.domain.Category" alias="CategoryResultMap"/>
+     <typeAlias type="com.ibase.web.localworkparam.domain.CellAndCategory" alias="CellAndCategory"/>
+     <typeAlias type="com.ibase.web.localworkparam.domain.CellAndIndex" alias="CellAndIndex2"/>
+     
+  </typeAliases>
+  
+  <plugins>
+    <plugin interceptor="com.github.pagehelper.PageInterceptor">
+        <property name="helperDialect" value="mysql"/>
+        <!-- 该参数默认为false -->
+        <!-- 设置为true时，会将RowBounds第一个参数offset当成pageNum页码使用 -->
+        <!-- 和startPage中的pageNum效果一样-->
+        <property name="offsetAsPageNum" value="true"/>
+        <!-- 该参数默认为false -->
+        <!-- 设置为true时，使用RowBounds分页会进行count查询 -->
+        <property name="rowBoundsWithCount" value="true"/>
+        <!-- 设置为true时，如果pageSize=0或者RowBounds.limit = 0就会查询出全部的结果 -->
+        <!-- （相当于没有执行分页查询，但是返回结果仍然是Page类型）-->
+        <property name="pageSizeZero" value="true"/>
+        <!-- 3.3.0版本可用 - 分页参数合理化，默认false禁用 -->
+        <!-- 启用合理化时，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页 -->
+        <!-- 禁用合理化时，如果pageNum<1或pageNum>pages会返回空数据 -->
+        <property name="reasonable" value="true"/>
+	</plugin>
+</plugins>
+</configuration>

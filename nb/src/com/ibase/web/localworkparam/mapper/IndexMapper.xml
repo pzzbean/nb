@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.localworkparam.mapper.IndexMapper">
+	<resultMap id="IndexResultMap" type="com.ibase.web.localworkparam.domain.Index">
+		<id column="index_id" property="indexId" />
+		<result column="index_name" jdbcType="VARCHAR" property="indexName" />
+	</resultMap>
+
+	<resultMap id="IndexResultMap2" type="com.ibase.web.localworkparam.domain.Index">
+		<id column="index_id" property="indexId" />
+		<result column="index_name" jdbcType="VARCHAR" property="indexName" />
+		<collection property="cellAndIndexs" ofType="CellAndIndex2">
+			<id column="cell_and_index_id" property="cellAndIndexId" />
+			<result column="cell_id" property="cellId" />
+			<result column="index_id" property="indexId" />
+			<result column="testplan_id" property="testplanId" />
+		</collection>
+	</resultMap>
+	
+	<resultMap id="QueryIndex" type="com.ibase.web.localworkparam.domain.queryAllDao.QueryIndex">
+		<result column="cell_id" property="cellId" />
+		<result column="index_id" property="indexId" />
+		<result column="index_name" property="indexName" />
+	</resultMap>
+
+	<select id="queryIndexes" resultMap="IndexResultMap">
+		select * from t_index
+		where 1=1
+		<if test="indexId > 0">
+			AND index_id = #{indexId}
+		</if>
+		<if test="indexName != null and indexName.trim().length()>0">
+			AND index_name like #{indexName}
+		</if>
+		<if test="page != null">
+			<![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+		</if>
+	</select>
+
+	<select id="countIndex" resultType="Integer">
+		select count(*) from t_index
+
+	</select>
+
+	<select id="selectIndex" parameterType="com.ibase.web.localworkparam.domain.Index"
+		resultType="com.ibase.web.localworkparam.domain.Index">
+		select * from t_index where
+		<if test="indexId > 0">
+			AND index_id = #{indexId}
+		</if>
+		<if test="indexName != null and indexName.trim().length()>0">
+			AND index_name like #{indexName}
+		</if>
+	</select>
+
+	<insert id="insertIndex" parameterType="com.ibase.web.localworkparam.domain.Index">
+		<selectKey keyProperty="indexId" order="AFTER" resultType="Integer">
+			SELECT last_insert_id()
+		</selectKey>
+		insert into t_index
+		(index_name)
+		values
+		(#{indexName})
+	</insert>
+	<update id="updateIndex" parameterType="com.ibase.web.localworkparam.domain.Index">
+		update t_index set
+		<if test="indexName != null and indexName.trim().length()>0">
+			index_name = #{indexName}
+		</if>
+		where index_id=#{indexId}
+	</update>
+
+	<delete id="deleteIndex" parameterType="Integer">
+		DELETE FROM
+		`t_index`WHERE index_id=#{indexId};
+	</delete>
+	<select id="queryIndexesByCellId" parameterType="java.lang.Long" resultMap="IndexResultMap2">
+		SELECT index_and_cell.`cell_id`,t_index.`index_id`,t_index.`index_name` FROM
+		index_and_cell JOIN t_index ON index_and_cell.`index_id`=t_index.`index_id`
+		WHERE cell_id=#{cellId}
+	</select>
+	
+	<select id="queryIndexeByCellId" parameterType="java.lang.Long" resultMap="QueryIndex">
+		SELECT index_and_cell.`cell_id`,t_index.`index_id`,t_index.`index_name` FROM
+		index_and_cell JOIN t_index ON index_and_cell.`index_id`=t_index.`index_id`
+		WHERE cell_id=#{cellId}
+	</select>
+</mapper>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>UserManagement</title>
+    <meta id="i18n_pagename" content="index-common">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/style.css">
+  </head>
+  <body>
+    <div id="app">
+    <div id="divI18n"></div>
+     <!-- 弹出框国际化使用 -->
+     <div id="divI18n"></div>
+      <!-- 顶部条 -->
+      <el-row>
+        <el-col :span="24">
+          <div class="logo" href="#">
+            <a href="javascript:;" class="sysname">nb</a>
+            <!-- 用户名 -->
+            <div class="welcDiv">
+            <select id="language">
+                <option value="zh-CN">中文简体</option>           
+                <option value="en">English</option>
+            </select>
+              <span class="i18n">welcomeAdmin</span>
+              <el-button class="i18n">login</el-button>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <!-- 左侧导航 -->
+        <el-col :span="4">
+          <el-menu default-active="7" class="el-menu-vertical-demo navL">
+            <a class="ai18n" href="/nb/html/singleTestReport.html"><el-menu-item index="1"><i class="el-icon-menu"></i><span class="i18n">SingleReport</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/roadTest.html"><el-menu-item index="2"><i class="el-icon-menu"></i><span class="i18n">RoadTest</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/performanceLogs.html"><el-menu-item index="3"><i class="el-icon-setting"></i><span class="i18n">PerformanceLog</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/workParticipation.html"><el-menu-item index="4"><i class="el-icon-menu"></i><span class="i18n">ParameterManagement</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/signallingDisplay.html"><el-menu-item index="5"><i class="el-icon-setting"></i><span class="i18n">SignallingDisplay</el-menu-item></a>
+            <a class="ai18n" href="/nb/html/testPlan.html"><el-menu-item index="6"><i class="el-icon-setting"></i><span class="i18n">TestPlan</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/userManage.html"><el-menu-item index="7"><i class="el-icon-menu"></i><span class="i18n">UserManagement</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/testItemConfiguration.html"><el-menu-item index="8"><i class="el-icon-setting"></i><span class="i18n">ConfigurationItem</el-menu-item></a>
+          </el-menu>
+        </el-col>
+        <!-- 表格 -->
+        <el-col :span="20">
+          <div class="tableDiv">
+            <!-- 增删改查按钮部分 -->
+            <div class="spanbox">
+              <span class="searchInput">loginName</span>
+              <span class="searchInput">userName</span>
+              <span class="searchInput">phone</span>
+            </div>
+            <div class="buttonDiv">
+              <el-button v-show="closeArr[0]" @click="closeBtn(0)" class="closebtn closebtn0" icon="close"></el-button>
+              <el-button v-show="closeArr[1]" @click="closeBtn(1)" class="closebtn closebtn1" icon="close"></el-button>
+              <el-button v-show="closeArr[2]" @click="closeBtn(2)" class="closebtn closebtn2" icon="close"></el-button>
+              <el-input v-model="user_code"  @change="inputChange(0)" placeholder="LoginNameNull" class="searchInput"></el-input>
+              <el-input v-model="user_name" @change="inputChange(1)" placeholder="UserNameNull" class="searchInput"></el-input>
+              <el-input v-model="user_phone" @change="inputChange(2)" placeholder="PhoneNull" class="searchInput"></el-input>
+              <el-button type="primary" @click="search" icon="search">search</el-button>
+              <el-button id="addBtn" type="primary" class="exportBtn" @click="add()">addUser</el-button>
+            </div>
+            <!-- 表格内容 -->
+            <template>
+              <el-table :data="tableData" border style="width: 100%">
+              
+                <el-table-column
+                  prop="user_code"
+                  label="loginName"
+                  width="180">
+                </el-table-column>
+                <el-table-column
+                  prop="user_name"
+                  label="userName"
+                  width="180">
+                </el-table-column>
+                <el-table-column
+                  prop="user_phone"
+                  label="phone">
+                </el-table-column>
+                <el-table-column
+                  label="operation"
+                  width="180">
+                  <template scope="scope">
+                    <el-button id="updateBtn" @click="change(scope.row)" type="primary" size="small">update</el-button>
+                    <el-button type="danger" size="small" @click="del(scope.row)">delete</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+
+              <!-- 分页 -->
+              <div class="block pageDiv">
+                <el-pagination
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange" 
+                  :page-size="pageSize"
+                  :current-page="currentPage"
+                  layout="prev, pager, next, jumper"
+                  :total="totalRows">
+                </el-pagination>
+              </div>
+            </template>
+          </div>
+        </el-col>
+      </el-row>
+      
+      <!-- 修改弹出框 -->
+      <el-dialog title="ModifyInformation" :visible.sync="dialogFormVisible">
+        <el-form :model="form" :inline="true">
+          <el-form-item name="LoginName" label=" " label-width="100px">
+            <el-input v-model="form.user_code" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="Password" label=" " label-width="100px">
+            <el-input v-model="form.user_password" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="RealName" label=" " label-width="100px">
+            <el-input v-model="form.user_name" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="phone" label=" " label-width="100px">
+            <el-input v-model="form.user_phone" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="role" label=" " label-width="100px">
+           	<el-select v-model="form.status" placeholder="请选择活动区域"> 
+           		<el-option label="Administrator" value="1" ></el-option>
+           		 <el-option label="Testers" value="2"></el-option>
+           	 </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="changeCancel">cancel</el-button>
+          <el-button type="primary" @click="changeSave">determine</el-button>
+        </div>
+      </el-dialog>
+      
+      <!-- 新增弹出框 -->
+      <el-dialog title="NewUserInformation" :visible.sync="dialogFormVisible2">
+        <el-form :model="form" :inline="true">
+          <el-form-item name="LoginName" label=" " label-width="100px">
+            <el-input v-model="form.user_code" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="Password" label=" " label-width="100px">
+            <el-input v-model="form.user_password" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="RealName" label=" " label-width="100px">
+            <el-input v-model="form.user_name" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="phone" label=" " label-width="100px">
+            <el-input v-model="form.user_phone" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item name="role" label=" " label-width="100px">
+           	<el-select v-model="form.status" placeholder="请选择活动区域"> 
+           		<el-option label="Administrator" value="1" ></el-option>
+           		 <el-option label="Testers" value="2"></el-option>
+           	 </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="addCancel">cancel</el-button>
+          <el-button type="primary" @click="addSave">determine</el-button>
+        </div>
+      </el-dialog>
+    </div>
+  </body>
+  <script src="../js/vue.js"></script>
+  <script src="../js/index.js"></script>
+  <script type="text/javascript" src="../stat/js/jquery-2.1.1.min.js"></script>
+  <script src="../js/fileJs/userManage.js"></script>
+  <script src="../js/jquery.i18n.properties-1.0.9.js"></script>
+  <script src="../js/language.js"></script>
+  
+</html>

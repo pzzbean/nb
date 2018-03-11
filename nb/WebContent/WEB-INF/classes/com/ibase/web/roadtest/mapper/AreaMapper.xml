@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.roadtest.mapper.AreaMapper">
+	<resultMap id="TemporayWorkparamDomain2ResultMap" type="com.ibase.web.roadtest.domain.TemporayWorkparamDomain2">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="home_area" jdbcType="VARCHAR"
+			property="homeArea" />
+		<result column="station_name" jdbcType="VARCHAR"
+			property="station_name" />
+		<result column="station_english_name" jdbcType="VARCHAR" property="station_english_name" />
+		<result column="physical_station_name" jdbcType="VARCHAR" property="physical_station_name" />
+		<result column="cell_chinese_name" jdbcType="VARCHAR" property="cell_chinese_name" />
+		<result column="cell_english_name" jdbcType="VARCHAR" property="cell_english_name" />
+		<result column="station_no" jdbcType="VARCHAR" property="stationNo" />
+		<result column="ci" jdbcType="VARCHAR" property="ci" />
+		<result column="station_no_hex" jdbcType="VARCHAR" property="station_no_hex" />
+		<result column="sector_id" jdbcType="VARCHAR" property="sector_id" />
+		<result column="local_cell_resource_id" jdbcType="VARCHAR" property="local_cell_resource_id" />
+		<result column="cell_id" jdbcType="VARCHAR" property="cell_id" />
+		<result column="longitude" jdbcType="VARCHAR" property="longitude" />
+		<result column="latitude" jdbcType="VARCHAR" property="latitude" />
+		<result column="antenna_manufacturer" jdbcType="VARCHAR" property="antenna_manufacturer" />
+		<result column="antenna_type" jdbcType="VARCHAR" property="antenna_type" />
+		<result column="antenna_path" jdbcType="VARCHAR" property="antenna_path" />
+		<result column="height" jdbcType="VARCHAR" property="height" />
+		<result column="azimuth" jdbcType="VARCHAR" property="azimuth" />
+		<result column="fixed_electrical_downtilt" jdbcType="VARCHAR" property="fixed_electrical_downtilt" />
+		<result column="electrical_downtilt" jdbcType="VARCHAR" property="electrical_downtilt" />
+		<result column="mechanical_downtilt" jdbcType="VARCHAR" property="mechanical_downtilt" />
+		<result column="total_downtilt" jdbcType="VARCHAR" property="total_downtilt" />
+		<result column="inside_or_outside" jdbcType="VARCHAR" property="inside_or_outside" />
+		<result column="nbiot_operation_mode" jdbcType="VARCHAR" property="nbiot_operation_mode" />
+		<result column="eutra_operating_Band" jdbcType="VARCHAR" property="eutra_operating_Band" />
+		<result column="downlink" jdbcType="VARCHAR" property="downlink" />
+		<result column="frequency_downlink" jdbcType="VARCHAR" property="frequency_downlink" />
+		<result column="downlink_channel_bandwidth" jdbcType="VARCHAR" property="downlink_channel_bandwidth" />
+		<result column="earfcn_uplink" jdbcType="VARCHAR" property="earfcn_uplink" />
+		<result column="frequency_uplink" jdbcType="VARCHAR" property="frequency_uplink" />
+		<result column="uplink_channel_bandwidth" jdbcType="VARCHAR" property="uplink_channel_bandwidth" />
+		<result column="maximum_output_power" jdbcType="VARCHAR" property="maximum_output_power" />
+		<result column="mcc" jdbcType="VARCHAR" property="mcc" />
+		<result column="mnc_length_in_plmn" jdbcType="VARCHAR" property="mnc_length_in_plmn" />
+		<result column="mnc" jdbcType="VARCHAR" property="mnc" />
+		<result column="tac" jdbcType="VARCHAR" property="tac" />
+		<result column="tac_hex" jdbcType="VARCHAR" property="tac_hex" />
+		<result column="uplink_reference_signals_cyclic_shift" jdbcType="VARCHAR" property="uplink_reference_signals_cyclic_shift" />
+		<result column="group_assignment_for_pusch" jdbcType="VARCHAR" property="group_assignment_for_pusch" />
+		<result column="cell_technology" jdbcType="VARCHAR" property="cell_technology" />
+		<result column="bbu" jdbcType="VARCHAR" property="bbu" />
+		<result column="rru" jdbcType="VARCHAR" property="rru" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		
+	</resultMap>
+
+	<select id="queryHomeArea"
+		resultType="com.ibase.web.roadtest.domain.TemporayWorkparamDomain2">
+		SELECT home_area
+		FROM temporay_workparam2
+		GROUP BY home_area
+	</select>
+	
+	<select id="queryAllByHa" parameterType="java.lang.String" resultType="com.ibase.web.roadtest.domain.TemporayWorkparamDomain2">
+		SELECT *
+		FROM temporay_workparam2
+		WHERE home_area = #{homeArea}
+	</select>
+	
+	<select id="queryByStationNo" parameterType="java.lang.String" resultType="com.ibase.web.roadtest.domain.TemporayWorkparamDomain2">
+		SELECT *
+		FROM temporay_workparam2
+		WHERE station_no = #{stationNo}
+	</select>
+	
+	<select id="selectStationAndCellBySN" parameterType="java.lang.String" resultType="com.ibase.web.roadtest.domain.TemporayWorkparamDomain2">
+		SELECT station_name,cell_chinese_name
+		FROM temporay_workparam2
+		WHERE station_no = #{stationNo}
+	</select>
+</mapper>

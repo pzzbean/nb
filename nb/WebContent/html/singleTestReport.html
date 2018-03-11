@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>SingleReport</title>
+    <meta id="i18n_pagename" content="index-common">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/singleTest.css">
+  </head>
+  <style>
+  .upfilebox{
+  	width:120px;
+  	height:34px;
+  	background:#4db3ff;
+	color:white;
+	line-height:34px;
+	position:relative;
+	margin-left:30px;
+	border-radius:5px;
+	text-align:center;
+  }
+  .uploadbtn{
+  position:absolute;
+  top:0;
+  left:0;
+	width:120px;
+	height:34px;
+	opacity:0;
+	}
+	
+	/* 地图上框 */
+	.singlemap-wrap {}
+  	.singlemap-map{height:460px;margin-top:40px;overflow-y:auto;}
+	.singlemap-param{height:460px;margin-top:40px;}
+	.singlemap-list{
+		background:white;
+		height:40px;
+		position:absolute;
+		top:0;
+		left:0;
+		z-index:1000;
+		width:100%;
+	}
+	
+      .singlemap-list .printscreen{float:left;height:40px;line-height:40px;}
+      .singlemap-items{float:left;}
+      .singlemap-items ul{height:40px;margin:0 40px 0 20px;}
+      .singlemap-items ul li {float:left;margin-right:20px;height:40px;line-height:40px;}
+      
+      .rsrpitem label,.pciitem label,.sinritem label{font-size:12px;}
+	  /*zrf start*/
+  		.singlemap-wrap {display:block;}
+	  /*zrf end*/
+  </style>
+  <body>
+    <div id="app">
+    <!-- 弹出框国际化使用 -->
+    <div id="divI18n"></div>
+      <!-- 顶部条 -->
+      <el-row>
+        <el-col :span="24">
+          <div class="logo" href="#">
+            <a href="javascript:;" class="sysname">nb</a>
+            <!-- 用户名 -->
+            <div class="welcDiv">
+            <select id="language">
+                <option value="zh-CN">中文简体</option>
+                <option value="en">English</option>
+            </select>
+              <span>欢迎您admin</span>
+              <el-button>登录</el-button>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <!-- 左侧导航 -->
+        <el-col :span="4">
+          <el-menu default-active="1" class="el-menu-vertical-demo navL">
+            <a class="ai18n" href="/nb/html/singleTestReport.html"><el-menu-item index="1"><i class="el-icon-menu"></i><span class="i18n">SingleReport</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/roadTest.html"><el-menu-item index="2"><i class="el-icon-menu"></i><span class="i18n">RoadTest</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/performanceLogs.html"><el-menu-item index="3"><i class="el-icon-setting"></i><span class="i18n">PerformanceLog</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/workParticipation.html"><el-menu-item index="4"><i class="el-icon-menu"></i><span class="i18n">ParameterManagement</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/signallingDisplay.html"><el-menu-item index="5"><i class="el-icon-setting"></i><span class="i18n">SignallingDisplay</el-menu-item></a>
+            <a class="ai18n" href="/nb/html/testPlan.html"><el-menu-item index="6"><i class="el-icon-setting"></i><span class="i18n">TestPlan</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/userManage.html"><el-menu-item index="7"><i class="el-icon-menu"></i><span class="i18n">UserManagement</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/testItemConfiguration.html"><el-menu-item index="8"><i class="el-icon-setting"></i><span class="i18n">ConfigurationItem</el-menu-item></a>
+          </el-menu>
+        </el-col>
+        <!-- 表格 -->
+        <el-col :span="20">
+          <div class="tableDiv">
+            <!-- 增删改查按钮部分 -->
+            <div class="spanbox">
+              <span class="searchInput">StationNo</span>
+            </div>
+            <div class="buttonDiv" style="margin-bottom:30px;">
+              <el-button style="float:left;margin-left:5px;" v-show="closeArr[0]" @click="closeBtn(0)" class="closebtn closebtn0" icon="close"></el-button>
+              <el-input style="float:left;" v-model="station_no" placeholder="StationNoNull" @change="inputChange(0)" class="searchInput"></el-input>
+              <el-button style="float:left" type="primary" icon="search" @click="search">search</el-button>
+            </div>
+            <!-- 表格内容 -->
+            <template>
+              <el-table :data="tableData" border style="width: 100%">
+                <el-table-column prop="station_No" label="StationNo" width="180"></el-table-column>
+                <el-table-column prop="testUserName" label="TestEngineer" width="180"></el-table-column>
+                <el-table-column prop="testDate" label="PlannedTestTime" ></el-table-column>
+                <el-table-column label="operation" width="200">
+                  <template scope="scope">
+	                  	<label class="i18n">SelectReportType</label> 
+							<select v-model="selected">
+							<option v-for="item in items" v-bind:value="item.value">{{item.text}}</option>   
+							</select>               	
+                    <el-button @click="exportFn(scope)" type="primary" size="small" >ExportReports</el-button>
+                    <!-- <el-button @click="ajaxFileUpload" type="primary" size="small" >UploadFiles</el-button> -->
+                  </template>
+                </el-table-column>
+              </el-table>
+              
+              <!-- 分页 -->
+              <div class="block pageDiv">
+                <el-pagination
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  :current-page.sync="currentPage"
+                  :page-size="pageSize"
+                  layout="prev, pager, next, jumper"
+                  :total="totalRows">
+                </el-pagination>
+              </div>
+            </template>
+          </div>
+        </el-col>
+      </el-row>
+<!--map start zrf-->
+		<div class="MapBigBox">
+			<div class="MapBox">
+				<ul class="header">
+					<li class="radio active">RSRP</li>
+					<li class="radio">SINR</li>
+					<li class="radio">PCI</li>
+					<li class="jietu" id="picbtn">截图</li>
+					<li class="close" style="float:right;"> X </li>
+				</ul>
+				<div class="map" id="pic">
+					<div id="container" style="width:720px;">
+					</div>
+					<div class="right" style="width:180px;background:#CCC;padding-left:10px;padding-top:20px;box-sizing:border-box;">
+						<ul class="rsrp indexui">
+							<li>RSRP：</li>
+							<li class="rsrpitem rsrpitem1">
+								<span class="descolor descolor1"></span>
+								<label for="rsrp1">-140 <= RSRP < -110</label>
+							</li>
+							<li class="rsrpitem rsrpitem2">
+								<span class="descolor descolor2"></span>
+								<label for="rsrp2">-110 <= RSRP < -100</label>
+							</li>
+							<li class="rsrpitem rsrpitem3">
+								<span class="descolor descolor3"></span>
+								<label for="rsrp3">-100 <= RSRP < -90</label>
+							</li>
+							<li class="rsrpitem rsrpitem4">
+								<span class="descolor descolor4"></span>
+								<label for="rsrp4">-90 <= RSRP < -80</label>
+							</li>
+							<li class="rsrpitem rsrpitem5">
+								<span class="descolor descolor5"></span>
+								<label for="rsrp5">-80 <= RSRP < -70</label>
+							</li>
+							<li class="rsrpitem rsrpitem6">
+								<span class="descolor descolor6"></span>
+								<label for="rsrp1">-70 <= RSRP <= 30</label>
+							</li>
+						</ul>
+						<ul class="sinr indexui">
+							<li>SINR：</li>
+							<li class="sinritem sinritem1">
+								<span class="descolor descolor1"></span>
+								<label for="sinr1">-15 <= SINR < 0</label>
+							</li>
+							<li class="sinritem sinritem2">
+								<span class="descolor descolor2"></span>
+								<label for="sinr2">0 <= SINR < 5</label>
+							</li>
+							<li class="sinritem sinritem3">
+								<span class="descolor descolor3"></span>
+								<label for="sinr3">5 <= SINR < 10</label>
+							</li>
+							<li class="sinritem sinritem4">
+								<span class="descolor descolor4"></span>
+								<label for="sinr4">10 <= SINR < 15</label>
+							</li>
+							<li class="sinritem sinritem5">
+								<span class="descolor descolor5"></span>
+								<label for="sinr5">15 <= SINR < 20</label>
+							</li>
+							<li class="sinritem sinritem6">
+								<span class="descolor descolor6"></span>
+								<label for="sinr1">20 <= SINR < 30</label>
+							</li>
+						</ul>
+						<ul class="pci indexui">
+							<li>PCI：</li>
+							<li class="pciitem pciitem1">
+								<span class="descolor descolor1"></span>
+								<label for="pci1">PCI = 119</label>
+							</li>
+							<li class="pciitem pciitem2">
+								<span class="descolor descolor5"></span>
+								<label for="pci2">PCI = 396</label>
+							</li>
+							<li class="pciitem pciitem3">
+								<span class="descolor descolor6"></span>
+								<label for="pci3">PCI = 398</label>
+							</li>
+						</ul>
+					</div>
+					<a id="abtn"></a>
+				</div>
+			</div>
+		</div>
+<!--map end zrf-->
+		<div class="failprint"></div>
+    </div>
+  </body>
+  <!-- 先引入 Vue -->
+  <script type="text/javascript" src="../stat/js/jquery-2.1.1.min.js"></script>
+  <script src="../js/vue.js"></script>
+  <script src="../js/index.js"></script>
+  <!-- <script src="../js/ajaxupload.js"></script> -->
+  <script src="../js/fileJs/singleTestReport.js"></script>
+  <script src="../js/jquery.i18n.properties-1.0.9.js"></script>
+  <script src="../js/language.js"></script>
+<!--js zrf start-->
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=uIGNq6dLthEQ5iM5G8mNfCl1BDDfWx9d"></script>
+  
+  <script src="../js/mapzrf.js"></script>
+  <!--截图-->
+  <script src="../js/html2canvas.js"></script>
+  <script>
+      var btn = document.getElementById('picbtn')
+      var abtn=document.getElementById('abtn');
+      btn.onclick=function(){
+
+          //截图函数，第一个参数为截图的DOM元素，第二个函数为参数配置项，onrendered函数为截图完成后返回的canvas对象
+          html2canvas(document.getElementById('pic'),{
+              onrendered: function(canvas) {
+                  //document.body.appendChild(canvas);
+                  //console.log(canvas.toDataURL())
+                  abtn.setAttribute("href", canvas.toDataURL());  //canvas.toDataURL()  图片base64转码
+                  abtn.setAttribute("download", "img.png");   //第二个参数自定义名称
+                  abtn.click();
+              }
+          });
+
+
+      }
+  </script>
+<!--js zrf end-->
+</html>

@@ -1,0 +1,170 @@
+/*单验地图 start*/
+.singlemap-wrap {
+	position: absolute;
+	z-index: 100;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 1050px;
+	height: 500px;
+	border: 1px solid #000;
+	display: none;
+}
+.singlemap-map,
+.singlemap-param {
+	float: left;
+	height: 100%;
+}
+.singlemap-param {
+	background: #eef1f6;
+}
+.singlemap-map {
+	width: 870px;
+}
+#singlemap-map .closeMapBtn {
+	width: 22px;
+	height: 22px;
+	background: #000;
+	color: #fff;
+	opacity: .5;
+	text-align: center;
+	cursor: pointer; 
+}
+.singlemap-param {
+	position: relative;
+	width: 180px;
+	overflow: auto;
+}
+.paramtitle {
+	box-sizing:border-box;
+	margin-top:10px;
+	padding-left:35px;
+	width:100%;
+}
+/* .rsrp, 
+.sinr,
+.pci {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	display: none; 
+} */
+.rsrpitem,
+.sinritem,
+.pciitem {
+	margin: 5px 0 0 10px;
+}
+
+.descolor {
+	display: inline-block;
+	width: 11px;
+	height: 11px;
+	border-radius: 50%;
+}
+.descolor1{
+	background: #ff0000;
+}
+.descolor2{
+	background: #ffc000;
+}
+.descolor3{
+	background: #ffff00;
+}
+.descolor4{
+	background: #92d050;
+}
+.descolor5{
+	background: #00b050;
+}
+.descolor6{
+	background: #003eff;
+}
+/* .descolor1,
+.descolor11,
+.descolor21 {
+	background: #E80308;
+}
+
+.descolor2,
+.descolor12 {
+	background: #E85C60;
+}
+
+.descolor13 {
+	background: #C637C7;
+}
+
+.descolor3,
+.descolor14 {
+	background: #E6E807;
+}
+
+.descolor4,
+.descolor15,
+.descolor23 {
+	background: #0E14E8;
+}
+
+.descolor5,
+.descolor16,
+.descolor22 {
+	background: #1EDEE8;
+}
+
+.descolor6,
+.descolor17 {
+	background: #1afa29;
+}
+
+.descolor7,
+.descolor18 {
+	background: #35c858;
+}
+
+.descolor8,
+.descolor19,
+.descolor24 {
+	background: #39ae55;
+} */
+
+/*去除百度log及版权信息 start*/
+.BMap_cpyCtrl {
+	display: none;
+}
+
+.anchorBL {
+	display: none;
+}
+/*去除百度log及版权信息 end*/
+
+.failprint {
+	position: absolute;
+	z-index: 200;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 250px;
+	height: 150px;
+	border: 1px solid #000;
+	border-radius: 10px;
+	text-align: center;
+	font: 600 26px/150px "microsoft yahei";
+	background: #333;
+	color: #fff;
+	display: none; 
+}
+/*单验地图 end*/
+/*====zrf start==========================*/
+/*单验报告map*/
+.MapBigBox{display:none;width:100%;height:100%;position:absolute;top:0;left:0;background: rgba(0,0,0,.6);z-index:9999;}
+.MapBigBox .MapBox{width:900px;height:500px;position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;background:#fff;border-radius:10px;border:2px solid #000;overflow:hidden;}
+.MapBigBox .MapBox .header{width:100%;height:45px;}
+.MapBigBox .MapBox .header li{width:100px;height:40px;line-height:40px;float:left;text-align:center;margin-left:20px;cursor:pointer;}
+.MapBigBox .MapBox .header .active{border-bottom:2px solid #20A0FF;color:#20A0FF;}
+.MapBigBox .MapBox .header .jietu{width:80px;height:30px;line-height:30px;background:#20A0FF;text-align:center;margin-top:8px;border-radius:5px;margin-left:100px;}
+.MapBigBox .MapBox .header .close{font-size:25px;width:50px;}
+.MapBigBox .MapBox .header .close:hover{color:red;}
+.MapBigBox .MapBox .map{width:100%;height:855px;}
+.MapBigBox .MapBox .map div{height:100%;float:left;}
+.MapBigBox .MapBox .map .right .indexui{display:none;}
+.MapBigBox .MapBox .map .right .indexui:first-child{display:block;}

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.plane.mapper.PlaneMapper">
+	<insert id="insertPlane" parameterType="com.ibase.web.plane.domain.Plane">
+		<selectKey keyProperty="plan_id" order="AFTER" resultType="long">
+			SELECT last_insert_id() 
+		</selectKey>
+		insert into plane(
+			user_id,
+			plan_test_engineer,
+			plan_te_phone,
+			plan_back_engineer,
+			plan_be_phone,
+			plane_test_content,
+			plane_test_time,
+			plane_create_time,
+			plane_creator
+		)values(
+			#{user_id},
+			#{plan_test_engineer},
+			#{plan_te_phone},
+			#{plan_back_engineer},
+			#{plan_be_phone},
+			#{plane_test_content},
+			#{plane_test_time},
+			now(),
+			#{plane_creator}
+		)
+				
+	</insert>
+	
+	<delete id="deletePlane" parameterType="long">
+		delete from plane
+		where plan_id = #{plan_id}
+		
+	</delete>
+	
+	<update id="updatePlane" parameterType="com.ibase.web.plane.domain.Plane">
+				update plane set 
+				<if test="plan_test_engineer != null and plan_test_engineer.trim().length()>0">
+					plan_test_engineer = #{plan_test_engineer},
+				</if>
+				<if test="plan_te_phone != null and plan_te_phone.trim().length()>0">
+					plan_te_phone = #{plan_te_phone},
+				</if>
+				<if test="plan_back_engineer != null and plan_back_engineer.trim().length()>0">
+					plan_back_engineer = #{plan_back_engineer},
+				</if>
+				<if test="plan_be_phone != null and plan_be_phone.trim().length()>0">
+					plan_be_phone = #{plan_be_phone},
+				</if>
+				<if test="plane_test_content != null and plane_test_content.trim().length()>0">
+					plane_test_content = #{plane_test_content},
+				</if>
+				<if test="plane_test_time != null and plane_test_time.trim().length()>0">
+					plane_test_time = #{plane_test_time},
+				</if>
+				<if test="plane_create_time != null and plane_create_time.trim().length()>0">
+					plane_create_time = #{plane_create_time},
+				</if>
+				<if test=" plane_creator>0">
+					plane_creator = #{plane_creator},
+				</if>
+				<if test="plane_Modifier >0">
+					plane_Modifier = #{plane_Modifier},
+				</if>
+				plane_update_time = now()
+				where plan_id = #{plan_id}
+	</update>
+	
+	<select id="countPlane" parameterType="com.ibase.web.plane.domain.Plane" resultType="long">
+				select count(1) from  plane
+				 where 1=1 
+				<if test="plan_id > 0">
+					 AND plan_id = #{plan_id}
+				</if>
+				<if test="user_id > 0">
+					 AND user_id = #{user_id}
+				</if>
+				<if test="plan_test_engineer != null and plan_test_engineer.trim().length()>0">
+					 AND plan_test_engineer like #{plan_test_engineer}
+				</if>
+				<if test="plan_te_phone != null and plan_te_phone.trim().length()>0">
+					 AND plan_te_phone like #{plan_te_phone}
+				</if>
+				<if test="plan_back_engineer != null and plan_back_engineer.trim().length()>0">
+					 AND plan_back_engineer like #{plan_back_engineer}
+				</if>
+				<if test="plan_be_phone != null and plan_be_phone.trim().length()>0">
+					 AND plan_be_phone like #{plan_be_phone}
+				</if>
+				<if test="plane_test_content != null and plane_test_content.trim().length()>0">
+					 AND plane_test_content like #{plane_test_content}
+				</if>
+				<if test="plane_test_time != null and plane_test_time.trim().length()>0">
+					 AND plane_test_time like #{plane_test_time}
+				</if>
+				<if test="plane_create_time != null and plane_create_time.trim().length()>0">
+					 AND plane_create_time like #{plane_create_time}
+				</if>
+				<if test="plane_creator >0">
+					 AND plane_creator like #{plane_creator}
+				</if>
+				<if test="plane_update_time != null and plane_update_time.trim().length()>0">
+					 AND plane_update_time like #{plane_update_time}
+				</if>
+				<if test="plane_Modifier >0">
+					 AND plane_Modifier like #{plane_Modifier}
+				</if>
+				
+	</select>
+	
+	<select id="queryPlane" parameterType="com.ibase.web.plane.domain.Plane" resultType="com.ibase.web.plane.domain.Plane">
+				select 
+					*
+				 from plane
+				 where 1=1 
+				<if test="plan_id > 0">
+					 AND plan_id = #{plan_id}
+				</if>
+				<if test="user_id > 0">
+					 AND user_id = #{user_id}
+				</if>
+				<if test="plan_test_engineer != null and plan_test_engineer.trim().length()>0">
+					 AND plan_test_engineer like #{plan_test_engineer}
+				</if>
+				<if test="plan_te_phone != null and plan_te_phone.trim().length()>0">
+					 AND plan_te_phone like #{plan_te_phone}
+				</if>
+				<if test="plan_back_engineer != null and plan_back_engineer.trim().length()>0">
+					 AND plan_back_engineer like #{plan_back_engineer}
+				</if>
+				<if test="plan_be_phone != null and plan_be_phone.trim().length()>0">
+					 AND plan_be_phone like #{plan_be_phone}
+				</if>
+				<if test="plane_test_content != null and plane_test_content.trim().length()>0">
+					 AND plane_test_content like #{plane_test_content}
+				</if>
+				<if test="plane_test_time != null and plane_test_time.trim().length()>0">
+					 AND plane_test_time like #{plane_test_time}
+				</if>
+				<if test="plane_create_time != null and plane_create_time.trim().length()>0">
+					 AND plane_create_time like #{plane_create_time}
+				</if>
+				<if test="plane_creator >0">
+					 AND plane_creator like #{plane_creator}
+				</if>
+				<if test="plane_update_time != null and plane_update_time.trim().length()>0">
+					 AND plane_update_time like #{plane_update_time}
+				</if>
+				<if test="plane_Modifier >0">
+					 AND plane_Modifier like #{plane_Modifier}
+				</if>				
+				ORDER BY plan_id DESC
+				<if test="page != null" >
+					<![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+				</if>
+	</select>
+	
+</mapper>

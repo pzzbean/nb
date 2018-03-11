@@ -1,0 +1,55 @@
+@CHARSET "UTF-8";
+.deleteBtn{
+	position:absolute;
+	right:-45px;
+	top:0;
+}
+  	
+.blocks {
+	display: block !important;
+}
+.configStationLeft,
+.configStationRight {
+	overflow:auto;
+	height:400px;
+	border:5px solid #000;
+	border-box:box-sizing;
+	padding:7px;
+}
+.configStationRight {
+	border-left:none;
+}
+
+.add_info_form .el-form-item{
+	
+}
+.cellWrap {
+	width: 430px;
+	border: solid #060606 1px;
+	margin-bottom: 5px;
+}
+
+.cellWrap span{
+	display: block;
+	margin: 5px 7px;
+	font: bold 14px/18px "microsoft yahei";
+	
+}
+
+.cellWrap .el-checkbox-button__inner{
+	border: 1px solid #bfcbd9;
+	border-radius: 10px !important;
+}
+/*=========zrf start=============*/
+body,html{min-width:1200px;}
+.searchInput{width:150px;margin-right: 20px;}
+.spanbox{padding:0;}
+.spanbox span{width:156px;}
+.buttonDiv{padding-left:0;}
+.exportBtn{margin-left: 20px !important;}
+.el-dialog__body{padding: 11px 20px;}
+.el-form-item{margin-bottom:4px;}
+.el-form--inline .el-form-item__label{text-align:left;}
+.el-dialog--small {width:650px;}
+
+/*=========zrf end=============*/

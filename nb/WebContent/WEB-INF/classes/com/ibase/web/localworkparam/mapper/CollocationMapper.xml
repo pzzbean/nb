@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.localworkparam.mapper.CollocationMapper">
+	<resultMap id="CollocationResultMap" type="com.ibase.web.localworkparam.domain.Collocation">
+		<id column="collocation_id" jdbcType="BIGINT" property="collectionId" />
+	    <result column="collocation_name" jdbcType="VARCHAR" property="collocationName" />
+	</resultMap>
+	
+	<select id="queryCollocations" resultMap="CollocationResultMap">
+		select * from collocation
+		where 1=1 
+		<if test="collocationName != null and collocationName.trim().length()>0">
+			 AND collocation_name like #{collocationName}
+		</if>
+		ORDER BY collocation_id DESC
+		<if test="page != null" >
+			<![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+		</if>
+	</select>
+	
+	<select id="countCollocations" resultType="Integer">
+		select count(*) from collocation
+	</select>
+	
+	<delete id="deleteCollocationById" parameterType="Integer" >
+		DELETE FROM `collocation` WHERE collocation_id =#{collocationId}
+	</delete>
+	
+	<insert id="insertCollocation" parameterType="com.ibase.web.localworkparam.domain.Collocation">
+		<selectKey keyProperty="collocationId" order="AFTER" resultType="Integer">
+			SELECT last_insert_id() 
+		</selectKey>
+		insert into collocation(
+			collocation_name
+		)values(
+			#{collocationName}		
+		)			
+	</insert>
+	
+	<update id="updateCollocation" parameterType="com.ibase.web.localworkparam.domain.Collocation">
+		
+	   UPDATE collocation SET
+	   <if test="collocationName != null and collocationName.trim().length()>0">
+					collocation_name = #{collocationName}
+	  </if>
+	   WHERE collocation_id=#{collocationId}
+	</update>
+</mapper>

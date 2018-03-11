@@ -1,0 +1,23 @@
+@CHARSET "UTF-8";
+.upfilebox{
+ 	width: 120px;
+ 	height: 34px;
+ 	background: #4db3ff;
+	color: white;
+	line-height: 34px;
+	position: relative;
+	margin-left: 30px;
+	border-radius: 5px;
+	text-align: center;
+}
+.uploadbtn{
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 120px;
+   height: 34px;
+   opacity: 0;
+}
+.buttonDiv{
+  	overflow:hidden;
+}	

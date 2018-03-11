@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.testplan.mapper.TemporaryTestplanMapper">
+	<resultMap id="TemporaryTestplanResultMap" type="com.ibase.web.testplan.domain.TemporaryTestplan">
+		<id column="temporary_testplan_id" property="temporaryTestplanId" />
+		<result column="user_id" property="userId" />
+		<result column="test_engineer" property="testEngineer" />
+		<result column="test_engineer_phone" property="testEngineerPhone" />
+		<result column="plan_creator" property="planCreator" />
+		<result column="plan_creator_phone" property="planCreatorPhone" />
+		<result column="plan_create_time" property="planCreateTime" />
+		<result column="plan_reviser" property="planReviser" />
+		<result column="plan_revise_time" property="planReviseTime" />
+		<result column="state" property="state" />
+		<result column="test_start_time" property="testStartTime" />
+		<result column="test_end_time" property="testEndTime" />
+		<result column="station_no" property="stationNo" />
+	</resultMap>
+	
+	<select id="queryTemporaryTestplans" resultMap="TemporaryTestplanResultMap">
+		select * from temporary_testplan
+	</select>
+
+	<select id="queryTemporaryTestplansByCondition" resultMap="TemporaryTestplanResultMap">
+		select * from temporary_testplan where 1=1
+			<if test="testEngineer!=null and testEngineer.trim().length()>0">
+				and test_engineer like #{testEngineer}
+			</if>
+			<if test="testEngineerPhone!=null and testEngineerPhone.trim().length()>0">
+				and test_engineer_phone like #{testEngineerPhone}
+			</if>
+			<if test="stationNo!=null and stationNo.trim().length()>0">
+				and station_no like #{stationNo}
+			</if>
+			<if test="testStartTime!=null and testStartTime.trim().length()>0">
+				and test_start_time like #{testStartTime}
+			</if>
+			 
+	</select>
+	
+	<insert id="insertTemporaryTestPlans" parameterType="com.ibase.web.testplan.domain.TemporaryTestplan">
+		insert into temporary_testplan 
+		(
+			user_id,
+			temporary_testplan_id,
+			test_engineer,
+			test_engineer_phone,
+			plan_creator,
+			plan_creator_phone,
+			plan_create_time,
+			plan_reviser,
+			plan_revise_time,
+			state,
+			test_start_time,
+			test_end_time,
+			station_no
+		)
+		values
+		(
+			#{userId},
+			#{temporaryTestplanId},
+			#{testEngineer},
+			#{testEngineerPhone},
+			#{planCreator},
+			#{planCreatorPhone},
+			#{planCreateTime},
+			#{planReviser},
+			#{planReviseTime},
+			#{state},
+			#{testStartTime},
+			#{testEndTime},
+			#{stationNo}
+		)
+	</insert>
+	
+	<delete id="delTemporaryTestPlans" parameterType="com.ibase.web.testplan.domain.TemporaryTestplan">
+		delete from temporary_testplan where  temporary_testplan_id=#{temporaryTestplanId}
+	</delete>
+	
+	
+	<update id="updTemporaryTestPlans" parameterType="com.ibase.web.testplan.domain.TemporaryTestplan">
+    update temporary_testplan
+    <set >
+      <if test="testEngineer!=null and testEngineer.trim().length()>0" >
+        test_engineer = #{testEngineer},
+      </if>
+      <if test="testEngineerPhone!=null and testEngineerPhone.trim().length()>0" >
+        test_engineer_phone = #{testEngineerPhone},
+      </if>
+      <if test="planCreator!=null and planCreator.trim().length()>0" >
+        plan_creator = #{planCreator},
+      </if>
+      <if test="planCreatorPhone!=null and planCreatorPhone.trim().length()>0" >
+        plan_creator_phone = #{planCreatorPhone},
+      </if>
+      <if test="planCreateTime!=null and planCreateTime.trim().length()>0" >
+        plan_create_time = #{planCreateTime},
+      </if>
+      <if test="state!=null and state.trim().length()>0" >
+        state = #{state},
+      </if>
+      <if test="planReviseTime!=null and planReviseTime.trim().length()>" >
+        plan_revise_time = #{planReviseTime},
+      </if>
+      <if test="state != null" >
+        updated = #{state},
+      </if>
+      <if test="testStartTime != null" >
+        test_start_time = #{testStartTime},
+      </if>
+      <if test="testEndTime != null" >
+        test_end_time = #{testEndTime},
+      </if>
+      <if test="stationNo != null" >
+        station_no = #{stationNo},
+      </if>
+    </set>
+    where temporary_testplan_id = #{temporaryTestplanId}
+  </update> 
+
+	<select id="selectAllStation1" parameterType="com.ibase.web.testplan.domain.TemporaryTestplan" resultMap="TemporaryTestplanResultMap">
+		SELECT * FROM temporary_testplan WHERE user_id=#{userId} AND test_start_time=#{testStartTime}	
+	</select>
+		
+	<select id="selectTestPlanNewStationnew2" parameterType="java.lang.String" resultType="java.lang.String">
+			SELECT cell_chinese_name
+			FROM temporay_workparam2
+			WHERE station_no = #{stationNo}
+	</select>
+	
+	<select id="selectTestPlanNewStationnew3" parameterType="String"
+		resultType="com.ibase.web.roadtest.domain.TemporayWorkparamDomain2">
+		SELECT * FROM temporay_workparam2 WHERE cell_chinese_name
+		= #{cell_chinese_name}
+	</select>
+	
+	<select id="selectByStationNo" parameterType="java.lang.String" resultType="com.ibase.web.roadtest.domain.TemporayWorkparamDomain2">
+			SELECT *
+			FROM temporay_workparam2
+			WHERE station_no = #{stationNo}
+	</select>
+</mapper>

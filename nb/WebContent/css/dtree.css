@@ -1,0 +1,125 @@
+/*dtree start*/
+
+.dtree {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #333;
+	white-space: nowrap;
+	
+}
+
+.dtree img {
+	border: 0px;
+	vertical-align: middle;
+}
+
+.dtree a {
+	color: #333;
+	text-decoration: none;
+}
+
+.singlecolord2,
+.singlecolord3,
+.singlecolord4,
+.singlecolord5,
+.singlecolord6,
+.singlecolord7,
+.singlecolord8,
+.singlecolord9,
+.singlecolord11,
+.singlecolord12,
+.singlecolord13,
+.singlecolord14,
+.singlecolord15,
+.singlecolord16,
+.singlecolord17,
+.singlecolord18,
+.singlecolord19,
+.singlecolord21,
+.singlecolord22,
+.singlecolord23,
+.singlecolord24 {
+	position: relative;
+	top: 2px;
+	display: inline-block;
+	width: 11px;
+	height: 11px;
+	padding-top: 1px;
+	margin: 0 3px;
+	border-radius: 50%;
+}
+
+
+.singlecolord2,
+.singlecolord11,
+.singlecolord21 {
+	background: #E80308;
+}
+.singlecolord3,
+.singlecolord12 {
+	background: #E85C60;
+}
+.singlecolord4,
+.singlecolord14 {
+	background: #E6E807;
+}
+.singlecolord5,
+.singlecolord15,
+.singlecolord23 {
+	background: #0E14E8;
+}
+.singlecolord6,
+.singlecolord16,
+.singlecolord22 {
+	background: #1EDEE8;
+}
+.singlecolord7,
+.singlecolord17 {
+	background: #0BE857;
+}
+.singlecolord8,
+.singlecolord18 {
+	background: #0AC723;
+}
+.singlecolord9,
+.singlecolord19,
+.singlecolord24 {
+	background: #01A50E;
+}
+.singlecolord13 {
+	background: #C637C7;
+}
+
+
+.dtree a.node,
+.dtree a.nodeSel {
+	white-space: nowrap;
+	padding: 1px 2px 1px 2px;
+	font-size: 12px;
+}
+
+.dtree a.node:hover,
+.dtree a.nodeSel:hover {
+	color: #333;
+	text-decoration: none;
+}
+
+.dtree a.nodeSel {
+	background-color: #c0d2ec;
+}
+
+.dtree .clip {
+	overflow: hidden;
+}
+
+.cx {
+	line-height: 12px;
+	padding: 0px;
+	margin: 0px;
+	width: 12px;
+	height: 12px;
+	vertical-align: middle;
+}
+
+
+/*dtree end*/

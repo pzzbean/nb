@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- SqlSessionFactoryBean 实现了 Spring 的 FactoryBean 接口 (请参考 Spring 文 档的 
+		3.8 章节)这就说明了由 Spring 最终创建的 bean 不是 SqlSessionFactoryBean 本身, 。 而是工厂类的 getObject()返回的方法的结果。 
+		Spring 将会在应用启动时为你 创建 SqlSessionFactory 对象,然后将它以 SqlSessionFactory 为名来存储 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		 <!-- 配置数据源 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- 指定XML配置文件 -->
+		<property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
+		<!-- mapperLocations 属性使用一个资源位置的 list,可以用来指定 MyBatis 的 XML 映射器文件的位置。 -->
+		<property name="mapperLocations" value="com.ibase.web.*.mapper.*.xml" />
+	</bean>
+
+	<!-- Mapper接口扫描器 Mapper接口所在包名，Spring会自动查找其下的Mapper -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.ibase.web.*.mapper" />
+	</bean>
+
+</beans>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.localworkparam.mapper.CellPropertyMapper">
+	<resultMap id="CellPropertyResultMap" type="com.ibase.web.localworkparam.domain.CellProperty">
+		<id column="cell_property_id" property="cellPropertyId" />
+	    <result column="cell_property_name" jdbcType="VARCHAR" property="cellPropertyName" />
+	    <result column="categroy_id" property="categoryId" />
+	</resultMap>
+	
+	<resultMap id="CategoryResultMap" type="com.ibase.web.localworkparam.domain.Category">
+		<id column="category_id" property="categoryId" />
+	    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+	    	<collection property="cellProperties" ofType="CellProperty">
+				<id column="cell_property_id" property="cellPropertyId" />
+		   		<result column="cell_property_name" jdbcType="VARCHAR" property="cellPropertyName" />
+		  		<result column="categroy_id" property="categoryId" />
+		  		<collection property="cellAndCategories" ofType="CellAndCategory">
+					<id column="cell_and_category_id" property="cellAndCategoryId" />
+			   		<result column="cell_id" property="cellId" />
+			  		<result column="category_id" property="categoryId" />
+			  		<result column="testplan_id" property="testplanId" />
+		  		</collection>
+	  		</collection>
+	</resultMap>
+	
+	<resultMap id="QueryCellCategoryWorkParms" type="com.ibase.web.localworkparam.domain.queryAllDao.QueryCellCategoryWorkParms">
+		<id column="cell_id" property="cellId" />
+    	<collection property="listQueryCategory" ofType="com.ibase.web.localworkparam.domain.queryAllDao.QueryCategory">
+			<id column="category_id" property="categoryId" />
+	   		<result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+	  		<collection property="listQueryWorkParm" ofType="com.ibase.web.localworkparam.domain.queryAllDao.QueryWorkParm">
+				<id column="cell_property_id" property="cellPropertyId" />
+		  		<result column="cell_property_name" property="cellPropertyName" />
+	  		</collection>
+  		</collection>
+	</resultMap>
+	
+	<insert id="addCellProperty" parameterType="com.ibase.web.localworkparam.domain.CellProperty">
+		<selectKey keyProperty="cellPropertyId" order="AFTER" resultType="Integer">
+			SELECT last_insert_id() 
+		</selectKey>
+	insert into cell_property
+	(
+		cell_property_name,
+		categroy_id
+	)
+	values
+	(
+		#{cellPropertyName},
+		#{categoryId}
+	)
+	</insert>
+	
+	<select id="queryCellProperties" resultMap="CellPropertyResultMap">
+		select * from cell_property
+		ORDER BY cell_property_id DESC
+		<if test="page != null" >
+			<![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+		</if>
+	</select>
+	
+	<select id="countCellProperties" resultType="Integer">
+		select count(*) from cell_property
+	</select>
+	
+	<select id="queryCellPropertiesByCellId" parameterType="java.lang.Long" resultMap="CategoryResultMap">
+		SELECT cell_and_category.`cell_id`,category.`category_id`,category.`category_name`,cell_property.`cell_property_id`,cell_property.`cell_property_name` FROM category
+		JOIN cell_and_category ON cell_and_category.`category_id` = category.`category_id`
+		JOIN cell_property ON category.`category_id` = cell_property.`categroy_id`
+		WHERE cell_and_category.`cell_id` = #{cellId}
+	</select>
+	
+	<select id="queryAllStationCellInfoByCellId" parameterType="java.lang.Long" resultMap="QueryCellCategoryWorkParms">
+		SELECT cell_and_category.`cell_id`,category.`category_id`,category.`category_name`,cell_property.`cell_property_id`,cell_property.`cell_property_name` FROM category
+		JOIN cell_and_category ON cell_and_category.`category_id` = category.`category_id`
+		JOIN cell_property ON category.`category_id` = cell_property.`categroy_id`
+		WHERE cell_and_category.`cell_id` = #{cellId}
+	</select>
+	
+	<delete id="deleteCellProperty" parameterType="com.ibase.web.localworkparam.domain.CellProperty">
+		delete from cell_property where cell_property_id=#{cellPropertyId}
+	</delete>
+	
+	<update id="updateCell" parameterType="com.ibase.web.localworkparam.domain.CellProperty">
+		update cell_property set
+		cell_property_name=#{cellPropertyName},
+		categroy_id=#{categoryId}
+		where cell_property_id=#{cellPropertyId}
+	</update>
+	
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.localworkparam.mapper.StationPropertyMapper">
+	<resultMap id="StationPropertyResultMap"
+		type="com.ibase.web.localworkparam.domain.StationProperty">
+		<id column="station_property_id" jdbcType="BIGINT" property="stationPropertyId" />
+		<result column="station_property_name" jdbcType="VARCHAR" property="stationPropertyName" />
+	</resultMap>
+
+	<insert id="addStationProperty" parameterType="com.ibase.web.localworkparam.domain.StationProperty">
+		<selectKey keyProperty="stationPropertyId" order="AFTER"
+			resultType="Integer">
+			SELECT last_insert_id()
+		</selectKey>
+		insert into station_property
+		(
+		station_height,
+		station_longitude,
+		station_latitude,
+		TAC,
+		NodeB_ID
+		)
+		values
+		(
+		#{stationHeight},
+		#{stationLongitude},
+		#{stationLatitude},
+		#{TAC},
+		#{NodeBID}
+		)
+	</insert>
+
+	<select id="queryStationProperties2" resultMap="StationPropertyResultMap">
+		select * from station_property
+	</select>
+	
+	<select id="queryStationProperties" resultMap="StationPropertyResultMap">
+		select * from station_property
+		ORDER BY station_property_id DESC
+		<if test="page != null">
+			<![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+		</if>
+	</select>
+
+	<select id="countStationProperties" resultType="Integer">
+		select count(*)
+		from station_property
+	</select>
+
+	<delete id="deleteStationProperty" parameterType="com.ibase.web.localworkparam.domain.StationProperty">
+		delete from
+		station_property where station_property_id=#{stationPropertyId}
+	</delete>
+	
+	<update id="updateStationProperty">
+		update station_property set
+		station_height=#{stationHeight},
+		station_longitude=#{stationLongitude},
+		station_latitude=#{stationLatitude},
+		TAC=#{TAC},
+		NodeB_ID=#{NodeBID}
+		where station_property_id=#{stationPropertyId}
+	</update>
+
+</mapper>

@@ -1,0 +1,76 @@
+.btn-circle.btn-xl {
+width: 130px;
+height: 130px;
+padding: 10px 16px;
+font-size: 12px;
+line-height: 1.33;
+border-radius: 100px;
+margin: 30px;
+background-color: #75a3e7;
+}
+
+#testItem_name {
+	color:#838B8B;
+	font: 600 15px/20px "microsoft yahei";
+	margin-left: 180px;
+}
+
+.tic_input{
+margin:35px 0 20px 10px;
+width: 350px;
+}
+.exportBtn .query_tic{
+	
+}
+.exportBtn .add_tic{
+	
+}
+
+#tic_button{
+padding: 0px 0 10px 10px;
+border: solid 1px #b9bdc0;
+width: 960px;
+margin: 15px 50px;
+}
+.tic_page{
+	padding: 0 180px 0 0;
+}
+.target_el_input {
+	width: 300px;
+	height: 35px;
+	color: #211e1e;
+	border: 2px solid #cec7c7;
+	border-radius: 5px;
+	font-size: 18px;
+}
+.parm_input{
+	width: 300px;
+	height: 35px;
+	color: #211e1e;
+	border: 2px solid #cec7c7;
+	border-radius: 5px;
+	font-size: 18px;
+	padding-left: 10px;
+}
+.target_el_form{
+	padding: 0 30px;
+}
+.target_footer{
+	padding: 15px 30px;
+}
+.el_dialog_box{
+	width: 1500px;
+}
+.delete_target_btn{
+	margin-left: 20px;
+}
+.add_target_btn{
+	border-radius: 20px;
+	margin: 10px 0 0 135px;
+	width: 100px;
+}
+.add_target_box{
+	width: 1000px;
+	left: 240px;
+	top: 150px;
+}

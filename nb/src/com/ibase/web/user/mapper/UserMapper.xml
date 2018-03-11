@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.user.mapper.UserMapper">
+	<resultMap type="com.ibase.web.user.domain.User" id="UserResultMap">
+		<id column="user_id" property="userId" />
+		<result column="user_code" property="user_code"/>
+		<result column="user_password" property="paw"/>
+		<result column="user_name" property="name"/>
+		<result column="user_phone" property="user_phone"/>
+		<result column="status" property="status"/>
+	</resultMap>
+	<insert id="insertUser" parameterType="com.ibase.web.user.domain.User">
+		<selectKey keyProperty="user_id" order="AFTER" resultType="long">
+			SELECT last_insert_id() 
+		</selectKey>
+		insert into user(
+			user_code,
+			user_password,
+			user_name,
+			user_phone,
+			status
+		)values(
+			#{user_code},
+			#{paw},
+			#{name},
+			#{user_phone},
+			#{status}
+		)
+				
+	</insert>
+	
+	<delete id="deleteUser" parameterType="string">
+		delete from user
+		where user_id = #{userId} 
+	</delete>
+	
+	<update id="updateUser" parameterType="com.ibase.web.user.domain.User">
+				update user set 
+				<if test="user_code != null and user_code.trim().length()>0">
+					user_code = #{user_code},
+				</if>
+				<if test="paw != null and paw.trim().length()>0">
+					user_password = #{paw},
+				</if>
+				<if test="name != null and name.trim().length()>0">
+					user_name = #{name},
+				</if>
+				<if test="user_phone != null and user_phone.trim().length()>0">
+					user_phone = #{user_phone},
+				</if>
+				<if test="status != null and status.trim().length()>0">
+					status = #{status},
+				</if>
+				user_id = #{userId}
+				where user_id = #{userId}
+
+	</update>
+	
+	<select id="countUser" parameterType="com.ibase.web.user.domain.User" resultType="long">
+				select count(1) from  user
+				 where 1=1 
+				<if test="userId > 0">
+					 AND user_id = #{userId}
+				</if>
+				<if test="user_code != null and user_code.trim().length()>0">
+					 AND user_code like #{user_code}
+				</if>
+				<if test="paw != null and paw.trim().length()>0">
+					 AND user_password like #{paw}
+				</if>
+				<if test="name != null and name.trim().length()>0">
+					 AND user_name like #{name}
+				</if>				
+				<if test="user_phone != null and user_phone.trim().length()>0">
+					 AND user_phone like #{user_phone}
+				</if>
+				<if test="status != null and status.trim().length()>0">
+					 AND status = #{status}
+				</if>
+	</select>
+	
+	<select id="userQuery" parameterType="com.ibase.web.user.domain.User" resultMap="UserResultMap">
+				select 
+					*
+				 from user
+				 where 1=1
+				 
+				 <if test="userId > 0 ">
+					 AND user_id = #{userId}
+				</if>
+				<if test="user_code != null and user_code.trim().length()>0">
+					 AND user_code like #{user_code}
+				</if>
+				<if test="paw != null and paw.trim().length()>0">
+					 AND user_password like #{paw}
+				</if>
+				<if test="name != null and name.trim().length()>0">
+					 AND user_name like #{name}
+				</if>				
+				<if test="user_phone != null and user_phone.trim().length()>0">
+					 AND user_phone like #{user_phone}
+				</if>
+				<if test="status != null and status.trim().length()>0">
+					 AND status = #{status}
+				</if>	 			
+				ORDER BY user_id
+				<if test="page != null" >
+					<![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+				</if>
+	</select>
+    
+    
+  
+  
+  <select id="searchSingleUser" parameterType="com.ibase.web.user.domain.User" resultMap="UserResultMap">
+				select 	* from user
+				where user_code = #{name} and user_password=#{paw}
+ 	</select>
+    
+    <select id="searchUserByUserId" parameterType="java.lang.Long" resultMap="UserResultMap">
+				select 	* from user where user_id = #{user_id}
+ 	</select>
+    
+</mapper>

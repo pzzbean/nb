@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE xml>
+<config>
+
+    <item name="xcx_AppID" value="wx67afa43329b5b9f0" desc="小程序ID" />
+    <item name="xcx_AppSecret" value="16ec0d02284d12a4cf8906149a3bc183" desc="小程序密钥" />
+    
+<!--     <item name="image_upload_dir" value="/data/apache-tomcat-7.0.57/webapps/upload/upload" desc="图片上传目录" /> -->
+    <item name="image_upload_dir" value="D:\\upload" desc="图片上传目录" />
+    <item name="image_visit_url" value="http://47.94.18.182:8083/upload" desc="图片访问地址" />
+    
+    <!-- 性能日志达标点 -->
+    <item name="logRegex" value="[a-zA-Z]|%" desc="只留数字的正则表达式" />
+    <item name="log_RSRP" value="-90" desc="RSRP" />
+    <item name="log_SINR" value="5" desc="SINR" />
+    <item name="log_top_rate" value="500.00Kbps" desc="上行速率" />
+    <item name="log_down_rate" value="500.00Kbps" desc="下行速率" />
+    <item name="log_delayTime" value="5000ms" desc="ping时延" />
+    <item name="log_ReselectDelay" value="5000ms" desc="重传时延" />
+    <item name="log_AttachDelay" value="5000ms" desc="接通时延" />
+    <item name="log_openRate" value="100%" desc="接通率" />
+    
+</config>

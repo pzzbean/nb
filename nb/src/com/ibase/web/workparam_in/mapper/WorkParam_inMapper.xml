@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.workparam_in.mapper.WorkParam_inMapper">
+	<insert id="insertWorkParam_in" parameterType="com.ibase.web.workparam_in.domain.WorkParam_inDomain">
+		<selectKey keyProperty="wp_id" order="AFTER" resultType="long">
+			SELECT last_insert_id() 
+		</selectKey>
+		insert into workparam_in(
+			wp_station_no,
+			wp_station_height,
+			wp_station_longitude,
+			wp_station_latitude,
+			wp_station_TAC,
+			wp_station_ENBID,
+			wp_cell_section,
+			wp_cell_ECI,
+			wp_cell_PCI,
+			wp_cell_workModel,
+			wp_cell_bearing,
+			wp_cell_dipAangle,
+			wp_cell_top_frequency,
+			wp_cell_top_bandwidth,
+			wp_cell_down_frequency,
+			wp_cell_down_bandwidth,
+			status,
+			wp_modifier,
+			wp_update_time
+		)values(
+			#{wp_station_no},
+			#{wp_station_height},
+			#{wp_station_longitude},
+			#{wp_station_latitude},
+			#{wp_station_TAC},
+			#{wp_station_ENBID},
+			#{wp_cell_section},
+			#{wp_cell_ECI},
+			#{wp_cell_PCI},
+			#{wp_cell_workModel},
+			#{wp_cell_bearing},
+			#{wp_cell_dipAangle},
+			#{wp_cell_top_frequency},
+			#{wp_cell_top_bandwidth},
+			#{wp_cell_down_frequency},
+			#{wp_cell_down_bandwidth},
+			#{status},
+			#{wp_modifier},
+			now()
+		)
+				
+	</insert>
+	
+	<update id="updateWorkparam_in" parameterType="com.ibase.web.workparam_in.domain.WorkParam_inDomain">
+				update workparam_in set 
+				<if test="wp_station_height != null and wp_station_height.trim().length()>0">
+					wp_station_height = #{wp_station_height},
+				</if>
+				<if test="wp_station_longitude != null and wp_station_longitude.trim().length()>0">
+					wp_station_longitude = #{wp_station_longitude},
+				</if>
+				<if test="wp_station_latitude != null and wp_station_latitude.trim().length()>0">
+					wp_station_latitude = #{wp_station_latitude},
+				</if>
+				<if test="wp_station_TAC != null and wp_station_TAC.trim().length()>0">
+					wp_station_TAC = #{wp_station_TAC},
+				</if>
+				<if test="wp_station_ENBID != null and wp_station_ENBID.trim().length()>0">
+					wp_station_ENBID = #{wp_station_ENBID},
+				</if>
+				<if test="wp_cell_section != null and wp_cell_section.trim().length()>0">
+					wp_cell_section = #{wp_cell_section},
+				</if>
+				<if test="wp_cell_ECI != null and wp_cell_ECI.trim().length()>0">
+					wp_cell_ECI = #{wp_cell_ECI},
+				</if>
+				<if test="wp_cell_PCI != null and wp_cell_PCI.trim().length()>0">
+					wp_cell_PCI = #{wp_cell_PCI},
+				</if>
+				<if test="wp_cell_workModel != null and wp_cell_workModel.trim().length()>0">
+					wp_cell_workModel = #{wp_cell_workModel},
+				</if>
+				<if test="wp_cell_bearing != null and wp_cell_bearing.trim().length()>0">
+					wp_cell_bearing = #{wp_cell_bearing},
+				</if>
+				<if test="wp_cell_dipAangle != null and wp_cell_dipAangle.trim().length()>0">
+					wp_cell_dipAangle = #{wp_cell_dipAangle},
+				</if>
+				<if test="wp_cell_top_frequency != null and wp_cell_top_frequency.trim().length()>0">
+					wp_cell_top_frequency = #{wp_cell_top_frequency},
+				</if>
+				<if test="wp_cell_top_bandwidth != null and wp_cell_top_bandwidth.trim().length()>0">
+					wp_cell_top_bandwidth = #{wp_cell_top_bandwidth},
+				</if>
+				<if test="wp_cell_down_frequency != null and wp_cell_down_frequency.trim().length()>0">
+					wp_cell_down_frequency = #{wp_cell_down_frequency},
+				</if>
+				<if test="wp_cell_down_bandwidth != null and wp_cell_down_bandwidth.trim().length()>0">
+					wp_cell_down_bandwidth = #{wp_cell_down_bandwidth},
+				</if>
+				<if test="status !=0">
+					status = #{status},
+				</if>
+				<if test="wp_modifier >0">
+					wp_modifier = #{wp_modifier},
+				</if>
+				wp_update_time = now()
+				where 1=1  
+				<if test="wp_station_no != null and wp_station_no.trim().length()>0">
+					and wp_station_no = #{wp_station_no}
+				</if>
+				<if test="wp_cell_section != null and wp_cell_section.trim().length()>0">
+					and wp_cell_section = #{wp_cell_section}
+				</if>
+
+	</update>
+	
+	<select id="countWorkParam_in" parameterType="com.ibase.web.workparam_in.domain.WorkParam_inDomain" resultType="long">
+				select count(1) from  workparam_in
+				 where 1=1 
+				<if test="wp_id > 0">
+					 AND wp_id = #{wp_id}
+				</if>
+				<if test="wp_station_no != null and wp_station_no.trim().length()>0">
+					 AND wp_station_no like #{wp_station_no}
+				</if>
+				<if test="wp_station_height != null and wp_station_height.trim().length()>0">
+					 AND wp_station_height like #{wp_station_height}
+				</if>
+				<if test="wp_station_longitude != null and wp_station_longitude.trim().length()>0">
+					 AND wp_station_longitude like #{wp_station_longitude}
+				</if>
+				<if test="wp_station_latitude != null and wp_station_latitude.trim().length()>0">
+					 AND wp_station_latitude like #{wp_station_latitude}
+				</if>
+				<if test="wp_station_TAC != null and wp_station_TAC.trim().length()>0">
+					 AND wp_station_TAC like #{wp_station_TAC}
+				</if>				
+				<if test="wp_station_ENBID != null and wp_station_ENBID.trim().length()>0">
+					 AND wp_station_ENBID like #{wp_station_ENBID}
+				</if>
+				<if test="wp_cell_section != null and wp_cell_section.trim().length()>0">
+					 AND wp_cell_section like #{wp_cell_section}
+				</if>
+				<if test="wp_cell_ECI != null and wp_cell_ECI.trim().length()>0">
+					 AND wp_cell_ECI like #{wp_cell_ECI}
+				</if>
+				<if test="wp_cell_PCI != null and wp_cell_PCI.trim().length()>0">
+					 AND wp_cell_PCI like #{wp_cell_PCI}
+				</if>				
+				<if test="wp_cell_workModel != null and wp_cell_workModel.trim().length()>0">
+					 AND wp_cell_workModel like #{wp_cell_workModel}
+				</if>
+				<if test="wp_cell_bearing != null and wp_cell_bearing.trim().length()>0">
+					 AND wp_cell_bearing like #{wp_cell_bearing}
+				</if>
+				<if test="wp_cell_dipAangle != null and wp_cell_dipAangle.trim().length()>0">
+					 AND wp_cell_dipAangle like #{wp_cell_dipAangle}
+				</if>
+				<if test="wp_cell_top_frequency != null and wp_cell_top_frequency.trim().length()>0">
+					 AND wp_cell_top_frequency like #{wp_cell_top_frequency}
+				</if>
+				<if test="wp_cell_top_bandwidth != null and wp_cell_top_bandwidth.trim().length()>0">
+					 AND wp_cell_top_bandwidth like #{wp_cell_top_bandwidth}
+				</if>
+				<if test="wp_cell_down_frequency != null and wp_cell_down_frequency.trim().length()>0">
+					 AND wp_cell_down_frequency like #{wp_cell_down_frequency}
+				</if>
+				<if test="wp_cell_down_frequency != null and wp_cell_down_frequency.trim().length()>0">
+					 AND wp_cell_down_frequency like #{wp_cell_down_frequency}
+				</if>
+				<if test="status !=0">
+					 AND status like #{status}
+				</if>
+				<if test="wp_modifier >0">
+					 AND wp_modifier like #{wp_modifier}
+				</if>
+				
+	</select>
+	
+	<select id="queryWorkParam_in" parameterType="com.ibase.web.workparam_in.domain.WorkParam_inDomain" resultType="com.ibase.web.workparam_in.domain.WorkParam_inDomain">
+				select 
+					*
+				 from workparam_in
+				 where 1=1 
+				<if test="wp_id > 0">
+					 AND wp_id = #{wp_id}
+				</if>
+				<if test="wp_station_no != null and wp_station_no.trim().length()>0">
+					 AND wp_station_no like #{wp_station_no}
+				</if>
+				<if test="wp_station_height != null and wp_station_height.trim().length()>0">
+					 AND wp_station_height like #{wp_station_height}
+				</if>
+				<if test="wp_station_longitude != null and wp_station_longitude.trim().length()>0">
+					 AND wp_station_longitude like #{wp_station_longitude}
+				</if>
+				<if test="wp_station_latitude != null and wp_station_latitude.trim().length()>0">
+					 AND wp_station_latitude like #{wp_station_latitude}
+				</if>
+				<if test="wp_station_TAC != null and wp_station_TAC.trim().length()>0">
+					 AND wp_station_TAC like #{wp_station_TAC}
+				</if>				
+				<if test="wp_station_ENBID != null and wp_station_ENBID.trim().length()>0">
+					 AND wp_station_ENBID like #{wp_station_ENBID}
+				</if>
+				<if test="wp_cell_section != null and wp_cell_section.trim().length()>0">
+					 AND wp_cell_section like #{wp_cell_section}
+				</if>
+				<if test="wp_cell_ECI != null and wp_cell_ECI.trim().length()>0">
+					 AND wp_cell_ECI like #{wp_cell_ECI}
+				</if>
+				<if test="wp_cell_PCI != null and wp_cell_PCI.trim().length()>0">
+					 AND wp_cell_PCI like #{wp_cell_PCI}
+				</if>				
+				<if test="wp_cell_workModel != null and wp_cell_workModel.trim().length()>0">
+					 AND wp_cell_workModel like #{wp_cell_workModel}
+				</if>
+				<if test="wp_cell_bearing != null and wp_cell_bearing.trim().length()>0">
+					 AND wp_cell_bearing like #{wp_cell_bearing}
+				</if>
+				<if test="wp_cell_dipAangle != null and wp_cell_dipAangle.trim().length()>0">
+					 AND wp_cell_dipAangle like #{wp_cell_dipAangle}
+				</if>
+				<if test="wp_cell_top_frequency != null and wp_cell_top_frequency.trim().length()>0">
+					 AND wp_cell_top_frequency like #{wp_cell_top_frequency}
+				</if>
+				<if test="wp_cell_top_bandwidth != null and wp_cell_top_bandwidth.trim().length()>0">
+					 AND wp_cell_top_bandwidth like #{wp_cell_top_bandwidth}
+				</if>
+				<if test="wp_cell_down_frequency != null and wp_cell_down_frequency.trim().length()>0">
+					 AND wp_cell_down_frequency like #{wp_cell_down_frequency}
+				</if>
+				<if test="wp_cell_down_frequency != null and wp_cell_down_frequency.trim().length()>0">
+					 AND wp_cell_down_frequency like #{wp_cell_down_frequency}
+				</if>
+				<if test="status !=0">
+					 AND status like #{status}
+				</if>
+				<if test="wp_modifier >0">
+					 AND wp_modifier like #{wp_modifier}
+				</if>
+				ORDER BY wp_id DESC
+				<if test="page != null" >
+					<![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+				</if>
+	</select>
+    
+    
+  
+</mapper>

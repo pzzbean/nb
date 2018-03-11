@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.localworkparam.mapper.StationMapper">
+	<resultMap id="StationResultMap" type="com.ibase.web.localworkparam.domain.Station">
+		<id column="station_id" jdbcType="BIGINT" property="stationId" />
+		<result column="station_name" jdbcType="VARCHAR" property="stationName" />
+		<result column="station_height" jdbcType="VARCHAR" property="stationHeight" />
+		<result column="station_longitude" jdbcType="VARCHAR" property="stationLongitude" />
+		<result column="station_latitude" jdbcType="VARCHAR" property="stationLatitude" />
+		<result column="station_workModel" jdbcType="VARCHAR" property="stationWorkModel" />
+		<result column="station_position" jdbcType="BIGINT" property="stationPosition" />
+	</resultMap>
+
+	<insert id="addStation" parameterType="com.ibase.web.localworkparam.domain.Station">
+		<selectKey keyProperty="stationId" order="AFTER" resultType="Integer">
+			SELECT last_insert_id()
+		</selectKey>
+		insert into station
+		(
+		station_name,
+		station_height,
+		station_longitude,
+		station_latitude,
+		station_workModel,
+		station_position,
+		TAC,
+		NodeB_ID
+		)
+		values
+		(
+		#{stationName},
+		#{stationHeight},
+		#{stationLongitude},
+		#{stationLatitude},
+		#{stationWorkModel},
+		#{stationPosition},
+		#{TAC},
+		#{NodeBID}
+		)
+	</insert>
+
+	<select id="queryStationById" parameterType="com.ibase.web.localworkparam.domain.Station"
+		resultMap="StationResultMap">
+		select * from station where station_id = #{stationId}
+	</select>
+
+	<select id="queryStations" parameterType="com.ibase.web.localworkparam.domain.Station"
+		resultMap="StationResultMap">
+		select * from station
+
+		<if test="page != null">
+			<![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+		</if>
+	</select>
+
+	<select id="countStation" resultType="Integer">
+		select count(*) from
+		station
+	</select>
+
+	<delete id="deleteStation" parameterType="com.ibase.web.localworkparam.domain.Station">
+		delete from station
+		where
+		station_id = #{stationId}
+	</delete>
+	
+	<update id="updateStation" parameterType="com.ibase.web.localworkparam.domain.Station">
+		update station set
+		station_name=#{stationName},
+		station_height=#{stationHeight},
+		station_longitude=#{stationLongitude},
+		station_latitude=#{stationLatitude},
+		station_workModel=#{stationWorkModel},
+		station_position=#{stationPosition},
+		TAC=#{TAC},
+		NodeB_ID=#{NodeBID}
+		where station_id=#{stationId}
+	</update>
+	
+	<select id="queryStationsByTestplanId" parameterType="java.lang.Long" 
+	resultMap="StationResultMap">
+		SELECT * FROM station WHERE station.`station_id`IN
+		(SELECT plan_and_station.`station_id` FROM plan_and_station WHERE testplan_id=#{testplanId})
+	</select>
+</mapper>

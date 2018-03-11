@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.roadtest.mapper.RoadTestMapper">
+	<resultMap id="RoadTestResultMap" type="com.ibase.web.roadtest.domain.RoadTest">
+		<id column="rt_id" jdbcType="BIGINT" property="rt_id" />
+		<result column="rt_station_longitude" jdbcType="VARCHAR"
+			property="rt_station_longitude" />
+		<result column="rt_station_latitude" jdbcType="VARCHAR"
+			property="rt_station_latitude" />
+		<result column="rt_cell_PCI" jdbcType="VARCHAR" property="rt_cell_PCI" />
+		<result column="rt_log_RSRP" jdbcType="VARCHAR" property="rt_log_RSRP" />
+		<result column="rt_log_SINR" jdbcType="VARCHAR" property="rt_log_SINR" />
+		<result column="rt_count" jdbcType="BIGINT" property="rt_count" />
+	</resultMap>
+
+
+
+	<insert id="insertRoadTest" parameterType="com.ibase.web.roadtest.domain.RoadTest">
+		<selectKey keyProperty="rt_id" order="AFTER" resultType="long">
+			SELECT last_insert_id()
+		</selectKey>
+		insert into roadtest(
+		rt_time ,
+		rt_station_longitude,
+		rt_station_latitude,
+		rt_cellId,
+		rt_cell_PCI,
+		rt_log_RSRP,
+		rt_log_SINR,
+		rt_createTime,
+		rt_creator,
+		rt_count,
+		rt_name
+
+		)values(
+
+		#{rt_time},
+		#{rt_station_longitude},
+		#{rt_station_latitude},
+		#{rt_cellId},
+		#{rt_cell_PCI},
+		#{rt_log_RSRP},
+		#{rt_log_SINR},
+		now(),
+		#{rt_creator},
+		#{rt_count},
+		#{rt_name}
+		)
+
+	</insert>
+	<insert id="insertRoadTestFile" parameterType="com.ibase.web.roadtest.domain.RoadTestFile">
+		<selectKey keyProperty="rtf_id" order="AFTER" resultType="long">
+			SELECT last_insert_id()
+		</selectKey>
+		insert into roadtestfile(
+		rtf_name,
+		user_id,
+		rtf_time,
+		rtf_upload_time
+
+		)values(
+
+		#{rtf_name},
+		#{user_id},
+		#{rtf_time},
+		now()
+
+		)
+
+	</insert>
+	<select id="queryRoadTest" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.RoadTest">
+		select * from roadtest where rt_count in
+		(
+		select rt_count from
+		(
+		select
+		rt_count from roadtest
+		where 1=1
+		<if test="rt_id > 0">
+			AND rt_id = #{rt_id}
+		</if>
+		<if test="rt_time != null and rt_time.trim().length()>0">
+			AND rt_time like #{rt_time}
+		</if>
+		<if
+			test="rt_station_longitude != null and rt_station_longitude.trim().length()>0">
+			AND rt_station_longitude like #{rt_station_longitude}
+		</if>
+		<if
+			test="rt_station_latitude != null and rt_station_latitude.trim().length()>0">
+			AND rt_station_latitude like #{rt_station_latitude}
+		</if>
+		<if test="rt_cellId != null and rt_cellId.trim().length()>0">
+			AND rt_cellId like #{rt_cellId}
+		</if>
+		<if test="rt_log_RSRP != null and rt_log_RSRP.trim().length()>0">
+			AND rt_log_RSRP like #{rt_log_RSRP}
+		</if>
+		<if test="rt_log_SINR != null and rt_log_SINR.trim().length()>0">
+			AND rt_log_SINR like #{rt_log_SINR}
+		</if>
+		<if test=" rt_createTime != null and rt_createTime.trim().length()">
+			AND rt_createTime like #{rt_createTime}
+		</if>
+		<if test="rt_creator != null and rt_creator .trim().length()>0">
+			AND rt_creator like #{rt_creator }
+		</if>
+		group by rt_count ORDER BY DATE_FORMAT(rt_time,'%Y-%m-%d') DESC
+		<if test="page != null">
+							<![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+		</if>
+		) rt
+		) ORDER BY rt_count ASC;
+	</select>
+	<select id="queryRoadTestFile" parameterType="com.ibase.web.roadtest.domain.RoadTestFile"
+		resultType="com.ibase.web.roadtest.domain.RoadTestFile">
+		select * from roadtestfile
+		where 1=1
+		<if test="rtf_id > 0">
+			AND rtf_id = #{rtf_id}
+		</if>
+		<if test="rtf_time != null and rtf_time.trim().length()>0">
+			AND rtf_time like #{rtf_time}
+		</if>
+		<if test="rtf_name != null and rtf_name.trim().length()>0">
+			AND rtf_name like #{rtf_name}
+		</if>
+		<if test="rtf_upload_time != null and rtf_upload_time.trim().length()>0">
+			AND rtf_upload_time like #{rtf_upload_time}
+		</if>
+		<if test="page != null">
+							<![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+		</if>
+	</select>
+	<select id="countRoadTest" resultType="Integer">
+		select count(1) from
+		roadtestfile;
+	</select>
+	<select id="allCountRoadTest" resultType="long">
+		select count(1) from
+		roadtest;
+	</select>
+
+	<select id="selectAllLng_Lat" parameterType="Integer"
+		resultType="com.ibase.web.roadtest.domain.RoadTest">
+		SELECT rt_id, rt_station_longitude, rt_station_latitude
+		FROM roadtest WHERE rt_count = ${id}
+	</select>
+
+	<select id="selectPCI" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.RoadTest">
+		SELECT rt_id, rt_cell_PCI FROM roadtest WHERE rt_cell_PCI =
+		${PCI} AND rt_count = ${id}
+	</select>
+
+	<select id="selectRSRP" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.RoadTest">
+		SELECT rt_id, rt_log_RSRP FROM roadtest WHERE rt_log_RSRP =
+		${RSRP} AND rt_count = ${id}
+	</select>
+
+	<select id="selectSINR" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.RoadTest">
+		SELECT rt_id, rt_log_SINR FROM roadtest WHERE rt_log_SINR =
+		${SINR} AND rt_count = ${id}
+	</select>
+	<delete id="truncateRoadTest">
+		truncate table roadtest;
+	</delete>
+	<insert id="insertImage" parameterType="com.ibase.web.roadtest.domain.Image">
+		<selectKey keyProperty="rti_id" order="AFTER" resultType="long">
+			SELECT last_insert_id()
+		</selectKey>
+		insert into roadtestimag(
+		rti_name,
+		rti_address,
+		rti_formate,
+		rtf_id,
+		target_name
+
+		)values(
+		#{rti_name},
+		#{rti_address},
+		#{rti_formate},
+		#{rtf_id},
+		#{target_name}
+		)
+
+	</insert>
+	<select id="queryRSRPXY1" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.LonLat">
+		SELECT rt_station_longitude,rt_station_latitude FROM `roadtest` WHERE
+		rt_count =${count} and rt_log_RSRP=${RSRP} and rt_log_RSRP<![CDATA[>]]>-85
+		and rt_log_RSRP<![CDATA[<=]]>
+		-70;
+	</select>
+
+	<select id="queryRSRPXY2" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.LonLat">
+		SELECT rt_station_longitude,rt_station_latitude FROM `roadtest` WHERE
+		rt_count =${count} and rt_log_RSRP=${RSRP} and rt_log_RSRP<![CDATA[>]]>-95
+		and rt_log_RSRP<![CDATA[<=]]>
+		-85;
+	</select>
+	<select id="queryRSRPXY3" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.LonLat">
+		SELECT rt_station_longitude,rt_station_latitude FROM `roadtest` WHERE
+		rt_count =${count} and rt_log_RSRP=${RSRP} and rt_log_RSRP<![CDATA[>]]>-100
+		and rt_log_RSRP<![CDATA[<=]]>
+		-95;
+	</select>
+	<select id="queryRSRPXY4" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.LonLat">
+		SELECT rt_station_longitude,rt_station_latitude FROM `roadtest` WHERE
+		rt_count=${count} AND rt_log_RSRP=${RSRP} AND rt_log_RSRP<![CDATA[>]]>-110
+		AND rt_log_RSRP<![CDATA[<=]]>-100;
+	</select>
+
+	<select id="querySINRXY1" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.LonLat">
+		SELECT rt_station_longitude,rt_station_latitude FROM `roadtest` WHERE
+		rt_count=${count} AND rt_log_SINR=${SINR} AND rt_log_SINR<![CDATA[>]]>-3
+		AND rt_log_SINR<![CDATA[<=]]>3;
+	</select>
+	<select id="querySINRXY2" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.LonLat">
+		SELECT rt_station_longitude,rt_station_latitude FROM `roadtest` WHERE
+		rt_count=${count} AND rt_log_SINR=${SINR} AND rt_log_SINR<![CDATA[>]]>3
+		AND rt_log_SINR<![CDATA[<=]]>9;
+	</select>
+	<select id="querySINRXY3" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.LonLat">
+		SELECT rt_station_longitude,rt_station_latitude FROM `roadtest` WHERE
+		rt_count=${count} AND rt_log_SINR=${SINR} AND rt_log_SINR<![CDATA[>]]>9
+		AND rt_log_SINR<![CDATA[<=]]>15;
+	</select>
+	<select id="querySINRXY4" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.LonLat">
+		SELECT rt_station_longitude,rt_station_latitude FROM `roadtest` WHERE
+		rt_count=${count} AND rt_log_SINR=${SINR} AND rt_log_SINR<![CDATA[>]]>15
+		AND rt_log_SINR<![CDATA[<=]]>50;
+	</select>
+
+	<select id="queryPCIXY1" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.LonLat">
+		SELECT rt_station_longitude,rt_station_latitude FROM
+		`roadtest` WHERE
+		rt_count=${count} AND rt_cell_PCI=${PCI} AND
+		rt_cell_PCI = 41;
+	</select>
+	<select id="queryPCIXY2" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.LonLat">
+		SELECT rt_station_longitude,rt_station_latitude FROM
+		`roadtest` WHERE
+		rt_count=${count} AND rt_cell_PCI=${PCI} AND
+		rt_cell_PCI = 409;
+	</select>
+	<select id="queryPCIXY3" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.LonLat">
+		SELECT rt_station_longitude,rt_station_latitude FROM
+		`roadtest` WHERE
+		rt_count=${count} AND rt_cell_PCI=${PCI} AND
+		rt_cell_PCI = 408;
+	</select>
+	<select id="queryPCIXY4" parameterType="com.ibase.web.roadtest.domain.RoadTest"
+		resultType="com.ibase.web.roadtest.domain.LonLat">
+		SELECT rt_station_longitude,rt_station_latitude FROM
+		`roadtest` WHERE
+		rt_count=${count} AND rt_cell_PCI=${PCI} AND
+		rt_cell_PCI = 135;
+	</select>
+	<select id="getAllRoadTestData" parameterType="Integer"
+		resultMap="RoadTestResultMap">
+		SELECT
+		rt_id,rt_station_longitude,rt_station_latitude,rt_cell_PCI,rt_log_RSRP,rt_log_SINR,rt_count
+		FROM `roadtest` WHERE rt_count = #{id1};
+	</select>
+
+	<select id="getImageAddress" parameterType="com.ibase.web.roadtest.domain.Image"
+		resultType="String">
+		SELECT rti_address FROM roadtestimag WHERE rtf_id=#{rtf_id}
+		AND target_name
+		=#{target_name};
+	</select>
+
+
+	<!--添加临时日志 -->
+	<insert id="insertTemporaryLog" parameterType="com.ibase.web.roadtest.domain.CellIndexResult">
+		insert into
+		temporary_log(
+		userId,
+		station_No,
+		testDate,
+		communityName,
+		wireless_RSRP,
+		wireless_SINR,
+		a_Attempts,
+		a_Success,
+		a_SuccessRatio,
+		c_ReElection,
+		c_Success,
+		c_ReElectionRatio,
+		p_Delay,
+		p_Pttempts,
+		p_success,
+		p_SuccessRadio,
+		udp_UpRate,
+		udp_DownRate,
+		cellId,
+		pci,
+		frequency,
+		r_ReElection,
+		r_Success,
+		r_ReElectionRatio,
+		tac,
+		ci
+		) values(
+		#{userId},
+		#{station_No},
+		#{testDate},
+		#{communityName},
+		#{wireless_RSRP},
+		#{wireless_SINR},
+		#{a_Attempts},
+		#{a_Success},
+		#{a_SuccessRatio},
+		#{c_ReElection},
+		#{c_Success},
+		#{c_ReElectionRatio},
+		#{p_Delay},
+		#{p_Pttempts},
+		#{p_success},
+		#{p_SuccessRadio},
+		#{udp_UpRate},
+		#{udp_DownRate},
+		#{cellId},
+		#{pci},
+		#{frequency},
+		#{r_ReElection},
+		#{r_Success},
+		#{r_ReElectionRatio},
+		#{tac},
+		#{ci}
+		)
+	</insert>
+
+	<update id="updateTemporaryLog" parameterType="com.ibase.web.roadtest.domain.CellIndexResult">
+		UPDATE temporary_log SET
+		communityName=#{communityName},
+		wireless_RSRP=#{wireless_RSRP},
+		wireless_SINR=#{wireless_SINR},
+		a_Attempts=#{a_Attempts},
+		a_Success=#{a_Success},
+		a_SuccessRatio=#{a_SuccessRatio},
+		c_ReElection=#{c_ReElection},
+		c_Success=#{c_Success},
+		c_ReElectionRatio=#{c_ReElectionRatio},
+		p_Delay=#{p_Delay},
+		p_Pttempts=#{p_Pttempts},
+		p_success=#{p_success},
+		p_SuccessRadio=#{p_SuccessRadio},
+		udp_UpRate=#{udp_UpRate},
+		udp_DownRate=#{udp_DownRate}
+		WHERE userId=#{userId} AND testDate=#{testDate} AND station_No=#{station_No}
+	</update>	
+	
+	<update id="insertTemporaryLogCellParameter" parameterType="com.ibase.web.roadtest.domain.CellParameterCheck">
+		UPDATE temporary_log SET
+		cellId=#{cellId},pci=#{pci},frequency=#{frequency} WHERE
+		userId=#{userId} AND testDate=#{testDate} AND station_No=#{station_No}
+	</update>
+	
+	<select id="selectCellIndexResultTotal" parameterType="com.ibase.web.roadtest.domain.CellIndexResultTotal"
+		resultType="com.ibase.web.roadtest.domain.CellIndexResultTotal">
+		SELECT * FROM temporary_log WHERE 
+		userId=#{0} AND testDate=#{1} AND station_No=#{2}
+	</select>
+	
+	<insert id="insertCellIndexResultTotal" parameterType="com.ibase.web.roadtest.domain.CellIndexResultTotal">
+		INSERT INTO temporary_log
+		(
+		userId,
+		testDate,
+		station_No,
+		cellId,
+		pci,
+		frequency
+		)
+		VALUES
+		(
+		#{userId},
+		#{testDate},
+		#{station_No},
+		#{cellId},
+		#{pci},
+		#{frequency}
+		)
+	</insert>
+	
+	<insert id="insertCellRoadTest" parameterType="com.ibase.web.roadtest.domain.RoadTestTotal">
+		INSERT INTO
+		temporary_roadtest(
+		userId,
+		station_No,
+		communityName,
+		cellId,
+		roadTestDate,
+		longitude,
+		latitude,
+		PCI,
+		RSRP,
+		SINR
+		)VALUES(
+
+		#{userId},
+		#{station_No},
+		#{communityName},
+		#{cellId},
+		#{roadTestDate},
+		#{longitude},
+		#{latitude},
+		#{PCI},
+		#{RSRP},
+		#{SINR}
+		)
+	</insert>
+
+
+	<select id="selectCellRoadTest" parameterType="java.lang.String"
+		resultType="com.ibase.web.roadtest.domain.RoadTestTotal">
+		SELECT * FROM temporary_roadtest WHERE station_No=#{0} AND roadTestDate=#{1}
+	</select>
+
+	<select id="selectTestPlanNewStationnew1"
+		resultType="com.ibase.web.roadtest.domain.TemporayWorkparamDomain2">
+		SELECT * FROM temporay_workparam2 
+	</select>
+
+	<select id="selectTestPlanNewStationnew2" parameterType="String"
+		resultType="String">
+		SELECT cell_chinese_name FROM temporay_workparam2 WHERE
+		station_no = #{StationNumber}
+	</select>
+
+	<select id="selectTestPlanNewStationnew3" parameterType="String"
+		resultType="com.ibase.web.roadtest.domain.TemporayWorkparamDomain2">
+		SELECT * FROM temporay_workparam2 WHERE cell_chinese_name
+		= #{0}
+	</select>
+	
+	<select id="selectStationRoadTest" 
+		resultType="com.ibase.web.roadtest.domain.CellIndexResultTotal">
+		SELECT * FROM temporary_log GROUP BY station_No , testDate
+		
+	</select>
+</mapper>

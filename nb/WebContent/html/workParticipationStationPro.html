@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>工参管理-基站属性</title>
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/style.css">
+  </head>
+  <style>
+  .upfilebox{
+  	width:120px;
+  	height:34px;
+  	background:#4db3ff;
+	color:white;
+	line-height:34px;
+	position:relative;
+	margin-left:30px;
+	border-radius:5px;
+	text-align:center;
+  }
+  .uploadbtn{
+  position:absolute;
+  top:0;
+  left:0;
+	width:120px;
+	height:34px;
+	opacity:0;
+	}
+  .buttonDiv{
+  	overflow:hidden;
+  	}	
+  </style>
+  <body>
+    <div id="app">
+      <!-- 顶部条 -->
+      <el-row>
+        <el-col :span="24">
+          <div class="logo" >
+            <a href="javascript:;" class="sysname">nb</a>
+            <!-- 用户名 -->
+            <div class="welcDiv">
+              <span>欢迎您admin</span>
+              <el-button @click=logOut>退出</el-button>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
+      
+        <!-- 左侧导航 -->
+        <el-col :span="4">
+          <el-menu default-active="4" class="el-menu-vertical-demo navL" @open="handleOpen" @close="handleClose">
+            <a class="ai18n" href="/nb/html/singleTestReport.html"><el-menu-item index="1"><i class="el-icon-menu"></i><span class="i18n">SingleReport</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/roadTest.html"><el-menu-item index="2"><i class="el-icon-menu"></i><span class="i18n">RoadTest</span></el-menu-item></a>
+            <a class="ai18n" href="/nb/html/performanceLogs.html"><el-menu-item index="3"><i class="el-icon-setting"></i><span class="i18n">PerformanceLog</span></el-menu-item></a>
+          	<el-submenu index="4">
+          		<template slot="title"><i class="el-icon-menu"></i>工参管理</template>
+          		<el-menu-item-group>
+		          <a href="/nb/html/workParticipationStation.html"><el-menu-item index="4-1">基站模块</el-menu-item></a>
+		          <a href="/nb/html/workParticipationStationPro.html"><el-menu-item index="4-2">基站属性模块</el-menu-item></a>    
+		          <a href="/nb/html/workParticipationCell.html"><el-menu-item index="4-3">小区模块</el-menu-item></a>
+		          <a href="/nb/html/workParticipationCategory.html"><el-menu-item index="4-4">类别模块</el-menu-item></a>
+		          <a href="/nb/html/workParticipationParam.html"><el-menu-item index="4-5">指标模块</el-menu-item></a>
+		          <a href="/nb/html/workParticipationConfig.html"><el-menu-item index="4-6">配置模块</el-menu-item></a>
+		        </el-menu-item-group>  
+          	</el-submenu>
+          	<a href="/nb/html/signallingDisplay.html"><el-menu-item index="5"><i class="el-icon-setting"></i>信令展示</el-menu-item></a>
+			<a href="/nb/html/testPlan.html"><el-menu-item index="6"><i class="el-icon-setting"></i>测试计划</el-menu-item></a>
+			<a href="/nb/html/userManage.html"><el-menu-item index="7"><i class="el-icon-menu"></i>用户管理</el-menu-item></a>
+			<a href="/nb/html/testItemConfiguration.html"><el-menu-item index="8"><i class="el-icon-setting"></i>测试项配置</el-menu-item></a>
+          </el-menu>
+        </el-col>
+        
+        
+        
+        <!-- 表格 -->
+        <el-col :span="20">
+        <el-tabs v-model="lableName" type="border-card" @tab-click="handleClick">
+		    <el-tab-pane label="运营商" name="1">
+		    	<div class="tableDiv">
+		            <!-- 增删改查按钮部分 -->
+		             <div class="spanbox">
+		              <span class="searchInput">站号:</span>
+		              <span class="searchInput">小区:</span>
+		            </div>
+		            <div class="buttonDiv">
+		              <el-button style="float:left;margin-right:5px;" v-show="closeArrWorkParam[0]" @click="closeBtnWorkParam(0)" class="closebtn closebtn0" icon="close"></el-button>
+		              <el-button style="float:left;margin-right:5px;" v-show="closeArrWorkParam[1]" @click="closeBtnWorkParam(1)" class="closebtn closebtn1" icon="close"></el-button>
+		              <el-input style="float:left;margin-right:5px;" v-model="wp_station_noWorkParam"  @change="inputChangeWorkParam(0)" placeholder="请输入站号" class="searchInput"></el-input>
+		              <el-input style="float:left;margin-right:5px;" v-model="wp_cell_sectionWorkParam" @change="inputChangeWorkParam(1)" placeholder="请输入小区" class="searchInput"></el-input>
+		              <el-button style="float:left;margin-right:5px;" type="primary" icon="search" @click="searchWorkParam">查询</el-button>
+		              <div class="upfilebox" style="float:left">
+		                <span id="upspan">选择文件上传</span>
+		              	<input class="uploadbtn" type="file" id="upfile" name="file">
+		              </div>
+		              <el-button style="float:left" type="primary" @click="ajaxFileUpload" class="exportBtn">导入</el-button>
+		            </div>
+		            <!-- 表格内容 -->
+		            <template>
+		              <el-table :data="tableDataWorkParam" border style="width: 100%">
+		                <el-table-column prop="wp_station_no" label="站号" ></el-table-column>
+		                <el-table-column prop="wp_cell_section" label="小区" ></el-table-column>
+		                 <el-table-column label="操作" width="100">
+		                  <template scope="scope">
+		                    <el-button @click="detail(scope.row)" type="primary" size="small">查看详情</el-button>
+		                    <!-- <el-button @click="exportFn(scope)" type="primary" size="small">导出</el-button> -->
+		                  </template>
+		                </el-table-column>
+		              </el-table>
+		              <!-- 分页 -->
+		              <div class="block pageDiv">
+		                <el-pagination
+		                  @size-change="handleSizeChangeWorkParam"
+		                  @current-change="handleCurrentChangeWorkParam"
+		                  :current-page="currentPageWorkParam"
+		                  :page-size="pageSizeWorkParam"
+		                  layout="prev, pager, next, jumper"
+		                  :total="totalRowsWorkParam">
+		                </el-pagination>
+		              </div>
+		            </template>
+		          </div>
+		    </el-tab-pane>
+		    
+		    
+		    <el-tab-pane label="本地" name="2">
+		    	<div class="tableDiv">
+		            <!-- 增删改查按钮部分 -->
+		             <div class="spanbox">
+		              <span class="searchInput">站号:</span>
+		              <span class="searchInput">小区:</span>
+		            </div>
+		            <div class="buttonDiv">
+		              <el-button style="float:left;margin-right:5px;" v-show="closeArrWorkParam_in[0]" @click="closeBtnWorkParam_in(0)" class="closebtn closebtn0" icon="close"></el-button>
+		              <el-button style="float:left;margin-right:5px;" v-show="closeArrWorkParam_in[1]" @click="closeBtnWorkParam_in(1)" class="closebtn closebtn1" icon="close"></el-button>
+		              <el-input style="float:left;margin-right:5px;" v-model="wp_station_noWorkParam_in"  @change="inputChangeWorkParam_in(0)" placeholder="请输入站号" class="searchInput"></el-input>
+		              <el-input style="float:left;margin-right:5px;" v-model="wp_cell_sectionWorkParam_in" @change="inputChangeWorkParam_in(1)" placeholder="请输入小区" class="searchInput"></el-input>
+		              <el-button style="float:left;margin-right:5px;" type="primary" icon="search" @click="searchWorkParam_in">查询</el-button>
+		            <!-- 表格内容 -->
+		            <template>
+		              <el-table :data="tableDataWorkParam_in" border style="width: 100%">
+		                <el-table-column prop="wp_station_no" label="站号" width="180"></el-table-column>
+		                <el-table-column prop="wp_cell_section" label="小区" width="180"></el-table-column>
+		                <el-table-column prop="statusStr" label="与运营商数据是否一致" ></el-table-column>
+		                <el-table-column label="操作" width="180">
+		                  <template scope="scope">
+		                    <el-button @click="detail(scope.row)" type="primary" size="small">查看详情</el-button>
+		                    <el-button @click="exportFn(scope)" type="primary" size="small">导出</el-button>
+		                  </template>
+		                </el-table-column>
+		              </el-table>
+		              <!-- 分页 -->
+		              <div class="block pageDiv">
+		                <el-pagination
+		                  @size-change="handleSizeChangeWorkParam_in"
+		                  @current-change="handleCurrentChangeWorkParam_in"
+		                  :current-page="currentPageWorkParam_in"
+		                  :page-size="pageSizeWorkParam_in"
+		                  layout="prev, pager, next, jumper"
+		                  :total="totalRowsWorkParam_in">
+		                </el-pagination>
+		              </div>
+		            </template>
+		          </div>
+		    	</div>
+		    </el-tab-pane>
+		  </el-tabs>
+        </el-col>
+      </el-row>
+      <!-- 查看详情弹出框 -->
+      <el-dialog title="查看详情" :visible.sync="dialogFormVisible">
+        <el-form :model="form" :inline="true">
+          <el-form-item label="站号" label-width="80px">
+            <el-input v-model="form.wp_station_no" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="站高" label-width="80px">
+            <el-input v-model="form.wp_station_height" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="基站经度" label-width="80px">
+            <el-input v-model="form.wp_station_longitude" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="基站维度" label-width="80px">
+            <el-input v-model="form.wp_station_latitude" auto-complete="off"></el-input>
+          </el-form-item>
+           <el-form-item label="TAC" label-width="80px">
+            <el-input v-model="form.wp_station_TAC" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="ENBID" label-width="80px">
+            <el-input v-model="form.wp_station_ENBID" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="扇区" label-width="80px">
+            <el-input v-model="form.wp_cell_section" auto-complete="off"></el-input>
+          </el-form-item>
+           <el-form-item label="ECI" label-width="80px">
+            <el-input v-model="form.wp_cell_ECI" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="PCI" label-width="80px">
+            <el-input v-model="form.wp_cell_PCI" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="工作模式" label-width="80px">
+            <el-input v-model="form.wp_cell_workModel" auto-complete="off"></el-input>
+          </el-form-item>
+           <el-form-item label="方位角" label-width="80px">
+            <el-input v-model="form.wp_cell_bearing" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="扇区倾角" label-width="80px">
+            <el-input v-model="form.wp_cell_dipAangle" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="上行频点" label-width="80px">
+            <el-input v-model="form.wp_cell_top_frequency" auto-complete="off"></el-input>
+          </el-form-item>
+           <el-form-item label="上行带宽" label-width="80px">
+            <el-input v-model="form.wp_cell_top_bandwidth" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="下行频点" label-width="80px">
+            <el-input v-model="form.wp_cell_down_frequency" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="下行带宽" label-width="80px">
+            <el-input v-model="form.wp_cell_down_bandwidth" auto-complete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+        </div>
+      </el-dialog>
+      
+    </div>
+  </body>
+  <!-- 先引入 Vue -->
+  <script  src="../stat/js/jquery-2.1.1.min.js"></script>
+  <script src="../js/vue.js"></script>
+  <script src="../js/index.js"></script>  
+  <script  src="../stat/js/ajaxupload.js"></script>
+  <script src="../js/fileJs/workParticipationStationPro.js"></script>
+  <script>
+	  $('#upfile').on('change',function(e){
+		  $('#upspan').html(e.currentTarget.files[0].name) 
+	  })
+  </script>
+</html>

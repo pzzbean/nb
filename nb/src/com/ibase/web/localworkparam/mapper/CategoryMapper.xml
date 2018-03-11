@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.localworkparam.mapper.CategoryMapper">
+	<resultMap id="CategoryResultMap" type="com.ibase.web.localworkparam.domain.Category">
+		<id column="category_id" jdbcType="BIGINT" property="categoryId" />
+		<result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+	</resultMap>
+
+	<insert id="addCategory" parameterType="com.ibase.web.localworkparam.domain.Category">
+		<selectKey keyProperty="categoryId" order="AFTER"
+			resultType="Integer">
+			SELECT last_insert_id()
+		</selectKey>
+		insert into category
+		(
+		category_name
+		)
+		values
+		(
+		#{categoryName}
+		)
+	</insert>
+
+	<select id="queryCategories" resultMap="CategoryResultMap">
+		select * from category
+		ORDER BY category_id DESC
+		<if test="page != null">
+			<![CDATA[  limit #{page.startNum},#{page.endIndex}  ]]>
+		</if>
+	</select>
+
+	<select id="countCategory" resultType="Integer">
+		select count(*) from
+		category
+	</select>
+
+	<delete id="deleteCategory" parameterType="com.ibase.web.localworkparam.domain.Category">
+		delete from category
+		where category_id=#{categoryId}
+	</delete>
+
+	<update id="updateCellProperty" parameterType="com.ibase.web.localworkparam.domain.Category">
+		UPDATE
+		cell_and_property SET
+		category_id = 0
+		WHERE category_id=#{categoryId}
+	</update>
+	
+	<update id="updateCategory" parameterType="com.ibase.web.localworkparam.domain.Category">
+		update category set
+		category_name=#{categoryName}
+		where category_id=#{categoryId}
+	</update>
+	
+	
+
+</mapper>

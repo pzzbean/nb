@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ibase.web.localworkparam.mapper.IndexAndCollocationMapper">
+	<resultMap id="IndexAndCollocation"
+		type="com.ibase.web.localworkparam.domain.IndexAndCollocation">
+		<id column="index_collocation_id" jdbcType="BIGINT" property="indexAndCollocationId" />
+		<result column="index_id" jdbcType="BIGINT" property="indexId" />
+		<result column="collocation_id" jdbcType="BIGINT" property="collocationId" />
+		<result column="collocation_name" jdbcType="VARCHAR" property="collocationName" />
+		<result column="collocation_value" jdbcType="VARCHAR" property="collocationValue" />
+	</resultMap>
+	<select id="queryCollocationsById" parameterType="Integer"
+		resultMap="IndexAndCollocation">
+		SELECT index_id,cc.collocation_id,collocation_name, collocation_value FROM
+		`index_and_collocation`AS ic INNER JOIN `collocation` AS cc ON
+		ic.`collocation_id`=cc.`collocation_id` WHERE
+		ic.`index_id`=#{indexId};
+	</select>
+
+
+	<insert id="insertIndexAndCollocation"
+		parameterType="com.ibase.web.localworkparam.domain.IndexAndCollocation">
+		<selectKey keyProperty="indexAndCollocationId" order="AFTER"
+			resultType="Integer">
+			SELECT last_insert_id()
+		</selectKey>
+		insert into index_and_collocation
+		(
+		index_id,
+		collocation_id,
+		collocation_value
+		)
+		values
+		(
+		#{indexId},
+		#{collocationId},
+		#{collocationValue}
+		)
+	</insert>
+	<select id="queryNoCollocationsById" parameterType="Integer"
+		resultMap="IndexAndCollocation">
+		SELECT * FROM `collocation` WHERE collocation_id NOT IN (
+		SELECT ic.`collocation_id` FROM
+		`index_and_collocation`AS ic INNER JOIN
+		`collocation` AS cc ON
+		ic.`collocation_id`=cc.`collocation_id` WHERE
+		ic.`index_id`=#{indexId});
+	</select>
+
+	<delete id="deleteIndexAndCollocation"
+		parameterType="com.ibase.web.localworkparam.domain.IndexAndCollocation">
+		DELETE FROM index_and_collocation WHERE index_id=#{indexId} AND
+		collocation_id=#{collocationId};
+	</delete>
+
+	<update id="updateIndexAndCollocation"
+		parameterType="com.ibase.web.localworkparam.domain.IndexAndCollocation">
+		update index_and_collocation set		
+		<if test="collocationId >0">
+			collocation_id = #{collocationId},
+		</if>
+		<if
+			test="collocationValue != null and collocationValue.trim().length()>0">
+			collocation_value = #{collocationValue}
+		</if>
+		where index_id = #{indexId} and collocation_id=#{collocationId}
+
+	</update>
+</mapper>
